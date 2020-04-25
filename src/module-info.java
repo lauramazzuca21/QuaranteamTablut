@@ -1,0 +1,9 @@
+/**
+ * 
+ */
+/**
+ * @author lallu
+ *
+ */
+module QuaranteamTablut {
+}
