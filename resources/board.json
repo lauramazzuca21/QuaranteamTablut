@@ -1,0 +1,26 @@
+{
+	"TablutXDim" : 9,
+	"TablutYDim" : 9,
+  	"TablutTileBoard": [
+	    ["EMPTY", "ESCAPE", "ESCAPE", "CAMP", "CAMP", "CAMP", "ESCAPE", "ESCAPE", "EMPTY"],
+	    ["ESCAPE", "EMPTY", "EMPTY", "EMPTY", "CAMP", "EMPTY", "EMPTY", "EMPTY", "ESCAPE"],
+	    ["ESCAPE", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "ESCAPE"],
+	    ["CAMP", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "CAMP"],    
+	    ["CAMP", "CAMP", "EMPTY", "EMPTY", "CASTLE", "EMPTY", "EMPTY", "CAMP", "CAMP"],    
+	    ["CAMP", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "CAMP"],    
+	    ["ESCAPE", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "EMPTY", "ESCAPE"],    
+	    ["ESCAPE", "EMPTY", "EMPTY", "EMPTY", "CAMP", "EMPTY", "EMPTY", "EMPTY", "ESCAPE"],
+	    ["EMPTY", "ESCAPE", "ESCAPE", "CAMP", "CAMP", "CAMP", "ESCAPE", "ESCAPE", "EMPTY"]
+  	],
+  	"TablutPawnBoard": [
+	    ["EMPTY", "EMPTY", "EMPTY", "BLACK", "BLACK", "BLACK", "EMPTY", "EMPTY", "EMPTY"],
+	    ["EMPTY", "EMPTY", "EMPTY", "EMPTY", "BLACK", "EMPTY", "EMPTY", "EMPTY", "EMPTY"],
+	    ["EMPTY", "EMPTY", "EMPTY", "EMPTY", "WHITE", "EMPTY", "EMPTY", "EMPTY", "EMPTY"],
+	    ["BLACK", "EMPTY", "EMPTY", "EMPTY", "WHITE", "EMPTY", "EMPTY", "EMPTY", "BLACK"],    
+	    ["BLACK", "BLACK", "WHITE", "WHITE", "KING", "WHITE", "WHITE", "BLACK", "BLACK"],    
+	    ["BLACK", "EMPTY", "EMPTY", "EMPTY", "WHITE", "EMPTY", "EMPTY", "EMPTY", "BLACK"],    
+	    ["EMPTY", "EMPTY", "EMPTY", "EMPTY", "WHITE", "EMPTY", "EMPTY", "EMPTY", "EMPTY"],    
+	    ["EMPTY", "EMPTY", "EMPTY", "EMPTY", "BLACK", "EMPTY", "EMPTY", "EMPTY", "EMPTY"],
+	    ["EMPTY", "EMPTY", "EMPTY", "BLACK", "BLACK", "BLACK", "EMPTY", "EMPTY", "EMPTY"]
+  	]
+}
