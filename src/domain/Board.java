@@ -29,7 +29,7 @@ public abstract class Board {
 
 	}
 	
-	public void removePawn(int x, int y ) {
+	public void removePawn(int x, int y) {
 		pawnBoard[x][y] = Pawn.EMPTY;
 	}
 
