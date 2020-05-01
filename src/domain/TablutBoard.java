@@ -7,17 +7,17 @@ public class TablutBoard extends Board {
 	
 	private static int DIM = 9;
 
-	public TablutBoard(Loader boardLoader) {
+	public TablutBoard(Loader boardLoader, String source) {
 		super(DIM, DIM);
 		
-		initializeBoard(boardLoader);
+		initializeBoard(boardLoader, source);
 	}
 
-	private void initializeBoard(Loader boardLoader) {
+	private void initializeBoard(Loader boardLoader, String source) {
 
-		BoardLoader loader = BoardLoader.BoardLoaderFactory(boardLoader);
-		this.setPawnBoard(loader.getPawnBoardInitialSetup());
-		this.setTileBoard(loader.getTileBoardInitialSetup());
+		BoardLoader loader = BoardLoader.BoardLoaderFactory(boardLoader, source);
+		this.setPawnBoard(loader.getPawnBoardSetup());
+		this.setTileBoard(loader.getTileBoardSetup());
 	}
 	
 	

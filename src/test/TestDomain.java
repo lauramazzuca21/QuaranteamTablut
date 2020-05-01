@@ -41,7 +41,7 @@ class TestDomain {
 	@Test
 	void test_board_loader_JSON() {
 		
-		Board tablut = new TablutBoard(Loader.JSON);
+		Board tablut = new TablutBoard(Loader.JSON,  "resources/board.json");
 		
 		assertTrue(Arrays.deepEquals(pawnBoard, tablut.getPawnBoard()));
 		assertTrue(Arrays.deepEquals(tileBoard, tablut.getTileBoard()));		

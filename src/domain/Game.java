@@ -2,12 +2,13 @@ package domain;
 
 public abstract class Game {
 	
-	private String player;
+	protected Player player;
+	protected State state;
 	
-	public Game(String player) {
+	public Game(Player player) {
 		this.player = player;
 	}
 	
-	public abstract void loop();
+	public abstract void loop(State newState);
 	
 }
