@@ -39,7 +39,7 @@ class TestDomain {
 	};
 	
 	@Test
-	void test_board_loader() {
+	void test_board_loader_JSON() {
 		
 		Board tablut = new TablutBoard(Loader.JSON);
 		

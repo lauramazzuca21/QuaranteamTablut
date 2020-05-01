@@ -1,10 +1,13 @@
 package domain;
 
-public class Game {
-
+public abstract class Game {
 	
-	public void loop() {
-		
+	private String player;
+	
+	public Game(String player) {
+		this.player = player;
 	}
+	
+	public abstract void loop();
 	
 }
