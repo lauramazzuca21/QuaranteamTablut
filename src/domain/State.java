@@ -1,11 +1,13 @@
 package domain;
 
+import enums.Turn;
+
 public abstract class State {
 
 	private Board board;
-	private String turnOf;
+	private Turn turnOf;
 	
-	public State(Board board, String turnOf) {
+	public State(Board board, Turn turnOf) {
 		this.board = board;
 		this.turnOf = turnOf;
 	}
@@ -18,11 +20,11 @@ public abstract class State {
 		this.board = board;
 	}
 
-	public String getTurnOf() {
+	public Turn getTurnOf() {
 		return turnOf;
 	}
 
-	public void setTurnOf(String turnOf) {
+	public void setTurnOf(Turn turnOf) {
 		this.turnOf = turnOf;
 	}
 	
