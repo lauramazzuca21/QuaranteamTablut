@@ -1,15 +1,19 @@
 package domain;
 
-import enums.Turn;
+import java.util.List;
+
+import enums.PlayerKind;
 
 public abstract class State {
 
 	private Board board;
-	private Turn turnOf;
+	private PlayerKind turnOf;
+	private PlayerKind myKind;
 	
-	public State(Board board, Turn turnOf) {
+	public State(Board board, PlayerKind turnOf, PlayerKind myKind) {
 		this.board = board;
 		this.turnOf = turnOf;
+		this.myKind = myKind;
 	}
 
 	public Board getBoard() {
@@ -20,13 +24,14 @@ public abstract class State {
 		this.board = board;
 	}
 
-	public Turn getTurnOf() {
+	public PlayerKind getTurnOf() {
 		return turnOf;
 	}
 
-	public void setTurnOf(Turn turnOf) {
+	public void setTurnOf(PlayerKind turnOf) {
 		this.turnOf = turnOf;
 	}
 	
+	public abstract List<Move> getPossibleMoves();
 	
 }

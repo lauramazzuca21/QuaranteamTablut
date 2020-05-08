@@ -1,6 +1,7 @@
 package ai;
 
 import domain.Board;
+import domain.State;
 
 public class HeuristicTablut implements HeuristicFunction{
 
@@ -14,6 +15,7 @@ public class HeuristicTablut implements HeuristicFunction{
 	 * @return un valore di stima dello stato
 	 */
 
+	//da adattare una volta finalizzato PVS
 	private static final double WEIGTH1 = 500;
 	private static final double WEIGTH2 = 800;
 	private static final double WEIGTH3 = 40;
@@ -24,24 +26,27 @@ public class HeuristicTablut implements HeuristicFunction{
 	private static final double WEIGTH8 = 5;
 
 	
-	public double getStateValue(Board state) {		
+	public static double getStateValue(State state) {		
 
-		if (state.getState().getTurn().equals(Turn.WHITEWIN)) return 10000;
+		if (state.hasWhitewon()) return 10000;
 
-		if (state.getState().getTurn().equals(Turn.BLACKWIN)) return -10000;
+		if (state.hasBlackWon()) return -10000;
 
 		double result = 0;
 
+		/*
 		if (isKingReadyToWin(state))
-
 			result += WEIGTH1;
 
 		if (isKingInDanger(state))
-
 			result -= WEIGTH2;
+		*/
+		
 		// valutazioni sul numero di pezzi
-		result += state.WhitesCount() * WEIGTH3;
-		result -= state.BlacksCount() * WEIGTH4;
+		result = result + (state.getWhitesCount() * WEIGTH3);
+		result = result - (state.getBlacksCount() * WEIGTH4);
+		
+		/*
 		//considerazioni sulle pedine nella zona del re
 		int[] pawnsInFlow = state.getPawnsInFlowDirection();
 		result += pawnsInFlow[0] * WEIGTH5;
@@ -51,13 +56,13 @@ public class HeuristicTablut implements HeuristicFunction{
 		result += state.getPawnsOnKingDiagonal2() * WEIGTH8;
 		return result;
 		return 0;
+		*/
 		
+		return result;
 	}
 
-
+/*
 	private static boolean isKingInDanger(ITablutState state) {
-
-
 		int[] king = state.getCoordKing();
 		//@Matteo versione semplificata -- quella completa non funziona
 
@@ -112,5 +117,11 @@ public class HeuristicTablut implements HeuristicFunction{
 		//altrimenti non è pronto a vincere	
 		return false;
 	}
+	*/
+	
+	
+	
+	
 	
 }
+

@@ -1,22 +1,23 @@
 package domain;
-import enums.Turn;
+
+import enums.PlayerKind;
 
 public abstract class Player {
 	
 	private String id;
-	private Turn turn;
+	private PlayerKind kind;
 	
-	public Player(String id, Turn Turn) {
+	public Player(String id, PlayerKind kind) {
 		this.id = id;
-		this.turn = turn;
+		this.kind = kind;
 	}
 	
 	public String getId() {
 		return id;
 	}
 
-	public Turn getTurn() {
-		return turn;
+	public PlayerKind getKind() {
+		return kind;
 	}
 
 	public abstract Move getNextMove(State newState);
