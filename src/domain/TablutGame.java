@@ -1,6 +1,7 @@
 package domain;
 
 import enums.Loader;
+import enums.PlayerKind;
 
 public class TablutGame extends Game {
 
@@ -8,7 +9,7 @@ public class TablutGame extends Game {
 	public TablutGame(Player player){
 		super(player);
 		
-		this.state = new TablutState(new TablutBoard(Loader.JSON, "resources/board.json"), player.getKind());
+		this.state = new TablutState(new TablutBoard(Loader.JSON, "resources/board.json"), PlayerKind.WHITE, player.getKind());
 	}
 	
 	@Override
@@ -19,7 +20,5 @@ public class TablutGame extends Game {
 		player.getNextMove(state);
 		
 	}
-	
-	
 
 }
