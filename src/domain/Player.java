@@ -1,11 +1,13 @@
 package domain;
 
+import enums.PlayerKind;
+
 public abstract class Player {
 	
 	private String id;
-	private String kind;
+	private PlayerKind kind;
 	
-	public Player(String id, String kind) {
+	public Player(String id, PlayerKind kind) {
 		this.id = id;
 		this.kind = kind;
 	}
@@ -14,7 +16,7 @@ public abstract class Player {
 		return id;
 	}
 
-	public String getKind() {
+	public PlayerKind getKind() {
 		return kind;
 	}
 
