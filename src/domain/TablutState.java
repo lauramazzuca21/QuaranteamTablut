@@ -91,4 +91,5 @@ public class TablutState extends State {
 		}//for x
 		return result;
 	}
+	
 }
