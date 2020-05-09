@@ -30,6 +30,7 @@ public class TablutBoard extends Board {
 	
 	public List<Position> getEatenPawns(Move move) {
 		Pawn moving = getPawnBoard()[move.getStartX()][move.getStartY()];
+		
 		switch(moving)
 		{
 		case WHITE:
