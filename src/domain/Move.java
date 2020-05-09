@@ -78,5 +78,9 @@ public class Move {
 	public String toString() {
 		return "move from " + starting.getX() + ", " + starting.getY() + " to " + getEnding().getX() + ", " + getEnding().getY();
 	}
+
+	public boolean isMoveLegal(State state) {
+
+	}
 	
 }

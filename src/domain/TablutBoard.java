@@ -161,4 +161,24 @@ public class TablutBoard extends Board {
 		
 		return eatenPawns;
 	}
+	
+	//più efficente se non si conta lungo il bordo? quindi un 7x7 invece di un 9x9
+	public int getPawnCount(Pawn tipo) {
+		int xAxis = getDimX();
+		int yAxis = getDimY();
+		Pawn p;
+		int pCounter=0;
+		
+		for(int i = 0; i<xAxis; i++) {
+			for(int j = 0; j<yAxis;j++) {
+				p=getPawn(xAxis, yAxis);
+				if(p== tipo) {
+					pCounter++;
+				}
+			}
+		}
+		
+		return pCounter;
+	}
+	
 }
