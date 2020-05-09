@@ -76,4 +76,6 @@ public abstract class Board {
 		return tileBoard[position.getX()][position.getY()];
 	}
 
+	public abstract int getPawnCount(Pawn pawnType);
+
 }
