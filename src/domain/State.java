@@ -9,12 +9,15 @@ public abstract class State {
 
 	private Board board;
 	private PlayerKind turnOf;
+
 	private PlayerKind myKind;
+	private GameState currentState;
 	
 	public State(Board board, PlayerKind turnOf, PlayerKind myKind) {
 		this.board = board;
 		this.turnOf = turnOf;
 		this.myKind = myKind;
+		currentState = GameState.PLAYING;
 	}
 
 	public Board getBoard() {

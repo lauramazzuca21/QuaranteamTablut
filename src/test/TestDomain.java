@@ -87,33 +87,15 @@ class TestDomain {
 		
 		TablutBoard tablut = new TablutBoard(Loader.JSON,  "resources/board.json");
 		
-		State tablutState = new TablutState(tablut, PlayerKind.BLACK, PlayerKind.WHITE);
+		tablut.applyMove(new Move(3, 0, 3, 3));
 		
-		List<Move> possibleMoves = tablutState.getPossibleMoves();
+		assertTrue(tablut.getEatenPawns(new Move(0, 5, 3, 5)).size() == 1);
 		
-		for (Move m : possibleMoves)
-		{
-			System.out.println(m.toString());
-		}
-		
-		assertTrue(possibleMoves.size() != 0);
 	}
 	
 	@Test
 	void test_tablut_board_getWhiteEatenPawns() {
 		
-		TablutBoard tablut = new TablutBoard(Loader.JSON,  "resources/board.json");
-		
-		State tablutState = new TablutState(tablut, PlayerKind.BLACK, PlayerKind.WHITE);
-		
-		List<Move> possibleMoves = tablutState.getPossibleMoves();
-		
-		for (Move m : possibleMoves)
-		{
-			System.out.println(m.toString());
-		}
-		
-		assertTrue(possibleMoves.size() != 0);
 	}
 	
 	@Test
@@ -128,9 +110,9 @@ class TestDomain {
 		tablut.applyMove(new Move(5, 4, 5, 2));
 		tablut.applyMove(new Move(5, 8, 5, 4));
 		tablut.applyMove(new Move(4, 5, 7, 5));
-		tablut.applyMove(new Move(0, 3, 4, 3));
-		tablut.applyMove(new Move(5, 4, 5, 2));
-		tablut.applyMove(new Move(5, 8, 5, 4));
+		tablut.applyMove(new Move(0, 5, 4, 5));
+		tablut.applyMove(new Move(3, 4, 3, 2));
+		tablut.applyMove(new Move(3, 8, 3, 4));
 		
 		assertTrue(tablut.isKingCaptured());
 	}
