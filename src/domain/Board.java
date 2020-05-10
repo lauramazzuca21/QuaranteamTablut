@@ -19,6 +19,15 @@ public abstract class Board {
 
 	}
 	
+	public Board(Pawn[][] pawnBoard, Tile[][] tileBoard) {
+		this.pawnBoard = pawnBoard;
+		this.tileBoard = tileBoard;
+		
+		this.dimX = tileBoard.length;
+		this.dimY = tileBoard[0].length;
+
+	}
+	
 	public int getDimX() {
 		return dimX;
 	}

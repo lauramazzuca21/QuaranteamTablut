@@ -1,5 +1,6 @@
 package domain;
 
+import enums.GameState;
 import enums.Loader;
 import enums.PlayerKind;
 
@@ -17,7 +18,15 @@ public class TablutGame extends Game {
 
 		this.state = newState;
 		
-		player.getNextMove(state);
+		Move nextMove = player.getNextMove(state);
+		
+		state.applyMove(nextMove);
+		
+		if (state.getGameState() == GameState.WIN)
+		{
+			
+		}
+		
 		
 	}
 
