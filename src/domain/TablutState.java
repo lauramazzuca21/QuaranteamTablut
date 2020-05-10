@@ -1,20 +1,26 @@
 package domain;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import enums.GameState;
 import enums.Pawn;
 import enums.PlayerKind;
 import enums.Tile;
 
 public class TablutState extends State {
 
+	private ArrayList<TablutBoard> boardHistory;
+	
 	public TablutState(TablutBoard board, PlayerKind turnOf, PlayerKind myKind) {
 		super(board, turnOf, myKind);
+		boardHistory = new ArrayList<TablutBoard>();
+		boardHistory.add(board);
 	}
 
 	@Override
-	public List<Move> getPossibleMoves() {
+	public List<Move> getPossibleMoves(PlayerKind playerKind) {
 		List<Move> result = new ArrayList<Move>();
 		Board board = getBoard();
 		int dimX = board.getDimX();
@@ -25,10 +31,10 @@ public class TablutState extends State {
 			for (int y = 0; y < dimY; y++)
 			{
 				//per evitare di avere due metodi che fanno la stessa cosa, controllo di chi devo controllare le mosse in questo if
-				if(  (  getTurnOf() == PlayerKind.WHITE 
+				if(  (  playerKind == PlayerKind.WHITE 
 						&& (getBoard().getPawn(x, y) == Pawn.WHITE || getBoard().getPawn(x, y) == Pawn.KING)
 						)
-						|| (getTurnOf() == PlayerKind.BLACK && getBoard().getPawn(x, y) == Pawn.BLACK)   )
+						|| (playerKind == PlayerKind.BLACK && getBoard().getPawn(x, y) == Pawn.BLACK)   )
 				{
 					boolean stopPrevHorizontal = false;
 					boolean stopPrevVertical = false;
@@ -89,7 +95,98 @@ public class TablutState extends State {
 			}//for y
 			
 		}//for x
+		
+		
+//		return result;
+		return removeRepeatingConfigurationMoves(result);
+	}
+	
+	private List<Move> removeRepeatingConfigurationMoves(List<Move> moves) {
+		
+		List<Move> result = new ArrayList<Move>();
+		
+		for (Move m : moves) {
+			Board temp = new TablutBoard(this.getBoard().getPawnBoard(), this.getBoard().getTileBoard());
+			
+			temp.applyMove(m);
+			
+			if (!checkRepeatingBoardConfiguration(temp))
+			{
+				result.add(m);
+			}
+		}
 		return result;
 	}
 	
+	public boolean checkRepeatingBoardConfiguration(Board current) {
+		
+		for (TablutBoard b : boardHistory)
+		{
+			if (Arrays.deepEquals(b.getPawnBoard(), current.getPawnBoard()))
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	@Override
+	public void applyMove(Move nextMove) {
+		getBoard().applyMove(nextMove);
+		
+		updateGameState();
+		
+	}
+
+	private void updateGameState() {
+		TablutBoard tb = (TablutBoard) getBoard();
+		boolean kingCaptured = tb.isKingCaptured();
+		boolean kingEscaped = tb.isKingOnEscapeTile();
+		
+		if ( (kingCaptured && this.getMyKind() == PlayerKind.BLACK)
+			|| (kingEscaped && this.getMyKind() == PlayerKind.WHITE) )
+		{
+			this.setGameState(GameState.WIN);
+		}
+		else if ( (kingCaptured && this.getMyKind() == PlayerKind.WHITE)
+				|| (kingEscaped && this.getMyKind() == PlayerKind.BLACK) 
+				|| getPossibleMoves(getMyKind()).size() == 0)
+		{
+			this.setGameState(GameState.LOSE);
+		}
+		else if (checkRepeatingBoardConfiguration(tb))
+		{
+			this.setGameState(GameState.DRAW);
+		}
+		
+	}
+
+	@Override
+	public List<Move> getPossibleMoves() {
+		return getPossibleMoves(getTurnOf());
+	}
+
+	@Override
+	public boolean hasWon(PlayerKind playerKind) {
+		switch(playerKind) {
+		case WHITE:
+			if ( (this.getGameState() == GameState.WIN && this.getMyKind() == PlayerKind.WHITE)
+					|| (this.getGameState() == GameState.LOSE && this.getMyKind() == PlayerKind.BLACK) )
+			{
+				return true;
+			}
+			return false;
+		case BLACK:
+			if ( (this.getGameState() == GameState.WIN && this.getMyKind() == PlayerKind.BLACK)
+					|| (this.getGameState() == GameState.LOSE && this.getMyKind() == PlayerKind.WHITE) )
+			{
+				return true;
+			}
+			return false;
+		}
+		
+		
+		return false;
+	}
 }

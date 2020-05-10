@@ -2,6 +2,7 @@ package domain;
 
 import java.util.List;
 
+import enums.GameState;
 import enums.PlayerKind;
 
 public abstract class State {
@@ -32,7 +33,24 @@ public abstract class State {
 		this.turnOf = turnOf;
 	}
 	
+	public GameState getGameState() {
+		return currentState;
+	}
+	
+	public PlayerKind getMyKind() {
+		return myKind;
+	}
+	
+	public void setGameState(GameState currentState) {
+		this.currentState = currentState;
+	}
+	
+	public abstract boolean hasWon(PlayerKind playerKind);
+
+	public abstract void applyMove(Move nextMove);
+
 	public abstract List<Move> getPossibleMoves();
+	public abstract List<Move> getPossibleMoves(PlayerKind playerKind);
 
 	
 }

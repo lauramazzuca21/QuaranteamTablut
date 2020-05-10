@@ -13,11 +13,26 @@ public class TablutBoard extends Board {
 	public static int DIM = 9;
 	
 	private Position kingPosition;
+	
+	private int whitePawns;
+	private int blackPawns;
+	
+	public int getWhitePawns() {
+		return whitePawns;
+	}
+	
+	public int getBlackPawns() {
+		return blackPawns;
+	}
 
 	public TablutBoard(Loader boardLoader, String source) {
 		super(DIM, DIM);
 		
 		initializeBoard(boardLoader, source);
+	}
+
+	public TablutBoard(Pawn[][] pawnBoard, Tile[][] tileBoard) {
+		super(pawnBoard, tileBoard);
 	}
 
 	private void initializeBoard(Loader boardLoader, String source) {
@@ -26,10 +41,44 @@ public class TablutBoard extends Board {
 		this.setPawnBoard(loader.getPawnBoardSetup());
 		this.setTileBoard(loader.getTileBoardSetup());
 		kingPosition = new Position(4, 4);
+		whitePawns = 8;
+		blackPawns = 16;
+	}
+	
+	@Override
+	public void applyMove(Move m) {
+		for (Position p : getEatenPawns(m))
+		{
+			removePawn(p);
+		}
+		
+		if (getPawn(m.getStarting().getX(), m.getStarting().getY()) == Pawn.KING)
+			kingPosition = m.getEnding();
+		
+		super.applyMove(m);
+	}
+	
+	@Override
+	public void removePawn(Position position) {
+		
+		switch(getPawn(position))
+		{
+			case WHITE:
+				whitePawns--;
+				break;
+			case BLACK:
+				blackPawns--;
+				break;
+			default:
+				break;
+		}
+		
+		super.removePawn(position);
 	}
 	
 	public List<Position> getEatenPawns(Move move) {
 		Pawn moving = getPawnBoard()[move.getStartX()][move.getStartY()];
+		
 		switch(moving)
 		{
 		case WHITE:
@@ -47,12 +96,20 @@ public class TablutBoard extends Board {
 	public boolean isKingCaptured() {
 		
 		if ( (getTile(kingPosition) == Tile.CASTLE && countKingSurrounded() == 4)
-				|| (kingAdiacentToCastle() && countKingSurrounded() == 3)
+				|| (isKingAdiacentToCastle() && countKingSurrounded() == 3)
 				|| countKingSurrounded() == 2)
 		{
 			return true;
 		}
 		
+		return false;
+	}
+	
+	public boolean isKingOnEscapeTile() {
+		if (getTile(kingPosition) == Tile.ESCAPE)
+		{
+			return true;
+		}
 		return false;
 	}
 	
@@ -70,7 +127,7 @@ public class TablutBoard extends Board {
 		return result;
 	}
 	
-	private boolean kingAdiacentToCastle() {
+	private boolean isKingAdiacentToCastle() {
 		for(Position p : kingPosition.getOrthogonalNeighbors(DIM, DIM))
 		{
 			if (getTile(p) == Tile.CASTLE)
@@ -85,9 +142,7 @@ public class TablutBoard extends Board {
 	private List<Position> getWhiteEatenPawns(Move move)
 	{
 		List<Position> eatenPawns = new LinkedList<Position>();
-		Position endingPosition = move.getEnding();
-
-		
+		Position endingPosition = move.getEnding();		
 		
 		if (getPawn(endingPosition.getNextPositionX(DIM)) == Pawn.BLACK 
 				&& (getPawn(endingPosition.getNextPositionX(DIM).getNextPositionX(DIM)) == Pawn.WHITE 
@@ -125,7 +180,6 @@ public class TablutBoard extends Board {
 		List<Position> eatenPawns = new LinkedList<Position>();
 		Position endingPosition = move.getEnding();
 
-
 		if (getPawn(endingPosition.getNextPositionX(DIM)) == Pawn.WHITE 
 				&& (getPawn(endingPosition.getNextPositionX(DIM).getNextPositionX(DIM)) == Pawn.BLACK 
 				|| getTile(endingPosition.getNextPositionX(DIM).getNextPositionX(DIM)) == Tile.CAMP
@@ -161,23 +215,15 @@ public class TablutBoard extends Board {
 		return eatenPawns;
 	}
 	
-	//più efficente se non si conta lungo il bordo? quindi un 7x7 invece di un 9x9
 	public int getPawnCount(Pawn tipo) {
-		int xAxis = getDimX();
-		int yAxis = getDimY();
-		Pawn p;
-		int pCounter=0;
-		
-		for(int i = 0; i<xAxis; i++) {
-			for(int j = 0; j<yAxis;j++) {
-				p=getPawn(xAxis, yAxis);
-				if(p== tipo) {
-					pCounter++;
-				}
-			}
+		switch (tipo) {
+		case WHITE:
+			return whitePawns;
+		case BLACK:
+			return blackPawns;
+		default:
+			return -1;
 		}
-		
-		return pCounter;
 	}
 	
 }

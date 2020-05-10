@@ -2,8 +2,8 @@ package domain;
 
 public class Move {
 
-	Position starting;
-	Position ending;
+	private Position starting;
+	private Position ending;
 	
 	public int getStartX() {
 		return starting.getX();
@@ -78,6 +78,5 @@ public class Move {
 	public String toString() {
 		return "move from " + starting.getX() + ", " + starting.getY() + " to " + getEnding().getX() + ", " + getEnding().getY();
 	}
-
 	
 }
