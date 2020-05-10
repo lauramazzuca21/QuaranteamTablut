@@ -3,5 +3,5 @@ import domain.State;
 
 public interface HeuristicFunction {
 	
-	public double getStateValue(State state);
+	public int getStateValue(State state);
 }

@@ -19,23 +19,23 @@ public class HeuristicTablut implements HeuristicFunction{
 	 */
 
 	//da adattare una volta finalizzato PVS
-	private static final double WEIGTH1 = 500;
-	private static final double WEIGTH2 = 800;
-	private static final double WEIGTH3 = 40;
-	private static final double WEIGTH4 = 20;
-	private static final double WEIGTH5 = 1;
-	private static final double WEIGTH6 = 1;
-	private static final double WEIGTH7 = 15;
-	private static final double WEIGTH8 = 5;
+	private static final int WEIGTH1 = 500;
+	private static final int WEIGTH2 = 800;
+	private static final int WEIGTH3 = 40;
+	private static final int WEIGTH4 = 20;
+	private static final int WEIGTH5 = 1;
+	private static final int WEIGTH6 = 1;
+	private static final int WEIGTH7 = 15;
+	private static final int WEIGTH8 = 5;
 
 	
-	public double getStateValue(State state) {		
+	public int getStateValue(State state) {		
 
 		if (state.hasWon(PlayerKind.WHITE)) return 10000;
 
 		if (state.hasWon(PlayerKind.BLACK)) return -10000;
 
-		double result = 0;
+		int result = 0;
 
 		/*
 		if (isKingReadyToWin(state))

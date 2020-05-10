@@ -14,11 +14,9 @@ import ai.HeuristicTablut;
 public class provaPVS {
 
 	static int SEARCHDEPTH = 5;
+/*
+	//	 returns either beta-1 or beta
 
-	/*
-	 * zero/null window search algorithm
-	 * returns either beta-1 or beta
-	 */
     public static double zWSearch(State state, int beta, int depth) {
         
     	// instantiate score to the worst value possible
@@ -43,7 +41,7 @@ public class provaPVS {
         /*
          * big improvement can be done there:
          * sorting the moves
-         */
+         
         
         TablutState newState;
         
@@ -114,9 +112,8 @@ public class provaPVS {
             }
         }
         
-        //fail-hard, return alpha
-        return beta - 1;
-        */
+        //fail-hard, return alpha  return beta - 1;
+       
     }
     
     // returns the index of the first legal move
@@ -146,9 +143,8 @@ public class provaPVS {
         return -1;
     }
     
-    /*
-     * principal variation search algorithm
-     */
+    //principal variation search algorithm
+     
     public static int pvSearch(int alpha, int beta, long WP, long WN, long WB, long WR, long WQ, long WK, long BP, long BN, long BB, long BR, long BQ, long BK, long EP, boolean CWK, boolean CWQ, boolean CBK, boolean CBQ, boolean WhiteToMove, int depth) {
         
     	//initialise variables
@@ -174,7 +170,7 @@ public class provaPVS {
         /*
          * big improvement can be done there:
          * sorting the moves
-         */
+         
         
         // first legal move from the moves
         int firstLegalMove = getFirstLegalMove(moves,WP,WN,WB,WR,WQ,WK,BP,BN,BB,BR,BQ,BK,EP,CWK,CWQ,CBK,CBQ,WhiteToMove);
@@ -313,5 +309,5 @@ public class provaPVS {
 
         return bestScore;
     }
-
+*/
 }
