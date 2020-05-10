@@ -2,6 +2,9 @@ package ai;
 
 import domain.Board;
 import domain.State;
+import domain.TablutState;
+import enums.Pawn;
+import enums.PlayerKind;
 
 public class HeuristicTablut implements HeuristicFunction{
 
@@ -26,11 +29,11 @@ public class HeuristicTablut implements HeuristicFunction{
 	private static final double WEIGTH8 = 5;
 
 	
-	public static double getStateValue(State state) {		
+	public double getStateValue(State state) {		
 
-		if (state.hasWhitewon()) return 10000;
+		if (state.hasWon(PlayerKind.WHITE)) return 10000;
 
-		if (state.hasBlackWon()) return -10000;
+		if (state.hasWon(PlayerKind.BLACK)) return -10000;
 
 		double result = 0;
 
@@ -43,8 +46,8 @@ public class HeuristicTablut implements HeuristicFunction{
 		*/
 		
 		// valutazioni sul numero di pezzi
-		result = result + (state.getWhitesCount() * WEIGTH3);
-		result = result - (state.getBlacksCount() * WEIGTH4);
+		result = result + (state.getBoard().getPawnCount(Pawn.WHITE)*WEIGTH3);
+		result = result + (state.getBoard().getPawnCount(Pawn.BLACK)*WEIGTH4);
 		
 		/*
 		//considerazioni sulle pedine nella zona del re
@@ -60,6 +63,7 @@ public class HeuristicTablut implements HeuristicFunction{
 		
 		return result;
 	}
+
 
 /*
 	private static boolean isKingInDanger(ITablutState state) {
@@ -118,6 +122,7 @@ public class HeuristicTablut implements HeuristicFunction{
 		return false;
 	}
 	*/
+	
 	
 	
 	
