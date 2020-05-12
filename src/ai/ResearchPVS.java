@@ -13,7 +13,7 @@ public class ResearchPVS {
 		if( depth == 0 ) return quiesce(state, alpha, beta );
 		
 		boolean bSearchPv = true;
-		for (Move m : state.getPossibleMoves(state.getTurnOf()))  { //da creare
+		for (Move m : state.getPossibleMoves(state.getMyKind()))  { //da creare
 			State newState = state;
 			newState.getBoard().applyMove(m);
 			
@@ -43,7 +43,7 @@ public class ResearchPVS {
 	    if( alpha < stand_pat )
 	        alpha = stand_pat;
 
-	    for(Move m : state.getPossibleMoves(state.getTurnOf())) {
+	    for(Move m : state.getPossibleMoves(state.getMyKind())) {
 	        State childState = state;
 	        childState.getBoard().applyMove(m);
 	        int score = -quiesce(childState, -beta, -alpha );
