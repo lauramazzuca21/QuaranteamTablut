@@ -1,6 +1,6 @@
 package domain;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import enums.Loader;
@@ -12,10 +12,10 @@ public class TablutBoard extends Board {
 	
 	public static int DIM = 9;
 	
-	private Position kingPosition;
+	private Position kingPosition = new Position(4, 4);
 	
-	private int whitePawns;
-	private int blackPawns;
+	private int whitePawns = 8;
+	private int blackPawns = 16;
 	
 	public int getWhitePawns() {
 		return whitePawns;
@@ -40,22 +40,26 @@ public class TablutBoard extends Board {
 		BoardLoader loader = BoardLoader.BoardLoaderFactory(boardLoader, source);
 		this.setPawnBoard(loader.getPawnBoardSetup());
 		this.setTileBoard(loader.getTileBoardSetup());
-		kingPosition = new Position(4, 4);
-		whitePawns = 8;
-		blackPawns = 16;
 	}
 	
 	@Override
-	public void applyMove(Move m) {
-		for (Position p : getEatenPawns(m))
+	public List<Position> applyMove(Move m) {
+		List<Position> eaten = getEatenPawns(m);
+		
+		if(eaten != null)
 		{
-			removePawn(p);
+			for (Position p : eaten)
+			{
+				removePawn(p);
+			}
 		}
 		
 		if (getPawn(m.getStarting().getX(), m.getStarting().getY()) == Pawn.KING)
 			kingPosition = m.getEnding();
 		
 		super.applyMove(m);
+		
+		return eaten;
 	}
 	
 	@Override
@@ -141,7 +145,7 @@ public class TablutBoard extends Board {
 
 	private List<Position> getWhiteEatenPawns(Move move)
 	{
-		List<Position> eatenPawns = new LinkedList<Position>();
+		List<Position> eatenPawns = new ArrayList<Position>();
 		Position endingPosition = move.getEnding();		
 		
 		if (getPawn(endingPosition.getNextPositionX(DIM)) == Pawn.BLACK 
@@ -177,7 +181,7 @@ public class TablutBoard extends Board {
 	
 	
 	private List<Position> getBlackEatenPawns(Move move) {
-		List<Position> eatenPawns = new LinkedList<Position>();
+		List<Position> eatenPawns = new ArrayList<Position>();
 		Position endingPosition = move.getEnding();
 
 		if (getPawn(endingPosition.getNextPositionX(DIM)) == Pawn.WHITE 
@@ -224,6 +228,25 @@ public class TablutBoard extends Board {
 		default:
 			return -1;
 		}
+	}
+	
+	public String toString() {
+		String result = "\t0\t1\t2\t3\t4\t5\t6\t7\t8\n";
+		
+		for (int x = 0; x < 9; x++)
+		{
+			result += x + "\t";
+			for (int y = 0; y < 9; y++)
+			{
+				result += getPawn(x, y) + "\t";
+			}
+			result+= "\n";
+		}
+				
+		
+		
+		return result;
+		
 	}
 	
 }

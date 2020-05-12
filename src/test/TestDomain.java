@@ -53,7 +53,7 @@ class TestDomain {
 		
 		TablutBoard tablut = new TablutBoard(Loader.JSON,  "resources/board.json");
 		
-		State tablutState = new TablutState(tablut, PlayerKind.WHITE, PlayerKind.WHITE);
+		State tablutState = new TablutState(tablut, PlayerKind.WHITE);
 		
 		List<Move> possibleMoves = tablutState.getPossibleMoves();
 		
@@ -70,15 +70,15 @@ class TestDomain {
 		
 		TablutBoard tablut = new TablutBoard(Loader.JSON,  "resources/board.json");
 		
-		State tablutState = new TablutState(tablut, PlayerKind.BLACK, PlayerKind.WHITE);
+		State tablutState = new TablutState(tablut, PlayerKind.BLACK);
 		
 		List<Move> possibleMoves = tablutState.getPossibleMoves();
 		
-		for (Move m : possibleMoves)
-		{
-			System.out.println(m.toString());
-		}
-		
+//		for (Move m : possibleMoves)
+//		{
+//			System.out.println(m.toString());
+//		}
+//		
 		assertTrue(possibleMoves.size() != 0);
 	}
 	

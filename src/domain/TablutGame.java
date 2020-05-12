@@ -2,7 +2,6 @@ package domain;
 
 import enums.GameState;
 import enums.Loader;
-import enums.PlayerKind;
 
 public class TablutGame extends Game {
 
@@ -10,13 +9,14 @@ public class TablutGame extends Game {
 	public TablutGame(Player player){
 		super(player);
 		
-		this.state = new TablutState(new TablutBoard(Loader.JSON, "resources/board.json"), PlayerKind.WHITE, player.getKind());
+		this.state = new TablutState(new TablutBoard(Loader.JSON, "resources/board.json"), player.getKind());
 	}
 	
 	@Override
 	public void loop(State newState) {
-
-		this.state = newState;
+		
+		if (newState != null)
+			this.state = newState;
 		
 		Move nextMove = player.getNextMove(state);
 		
@@ -24,7 +24,17 @@ public class TablutGame extends Game {
 		
 		if (state.getGameState() == GameState.WIN)
 		{
-			
+			System.out.println("You win");
+		}
+		
+		else if(state.getGameState() == GameState.LOSE)
+		{
+			System.out.println("You lost");
+		}
+		
+		else if(state.getGameState() == GameState.DRAW)
+		{
+			System.out.println("Draw");
 		}
 		
 		

@@ -10,5 +10,9 @@ public abstract class Game {
 	}
 	
 	public abstract void loop(State newState);
+
+	public State getState() {
+		return state;
+	}
 	
 }
