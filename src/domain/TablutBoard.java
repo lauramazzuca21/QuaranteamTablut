@@ -17,12 +17,16 @@ public class TablutBoard extends Board {
 	private int whitePawns = 8;
 	private int blackPawns = 16;
 	
-	public int getWhitePawns() {
+	public int getWhitePawnNumber() {
 		return whitePawns;
 	}
 	
-	public int getBlackPawns() {
+	public int getBlackPawnNumber() {
 		return blackPawns;
+	}
+	
+	public Position getKingPosition() {
+		return kingPosition;
 	}
 
 	public TablutBoard(Loader boardLoader, String source) {
