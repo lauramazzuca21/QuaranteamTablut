@@ -1,7 +1,7 @@
 package ai;
-import domain.Board;
+import domain.State;
 
 public interface HeuristicFunction {
 	
-	public double getStateValue(Board state);
+	public int getStateValue(State state);
 }

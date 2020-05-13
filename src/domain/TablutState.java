@@ -1,7 +1,6 @@
 package domain;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import enums.GameState;
@@ -11,14 +10,15 @@ import enums.Tile;
 
 public class TablutState extends State {
 
-	private ArrayList<TablutBoard> boardHistory;
+	private ArrayList<String> boardHistory;
 	
-	public TablutState(TablutBoard board, PlayerKind turnOf, PlayerKind myKind) {
-		super(board, turnOf, myKind);
-		boardHistory = new ArrayList<TablutBoard>();
-		boardHistory.add(board);
+	public TablutState(Board board) {
+		super(board, PlayerKind.WHITE);
+		boardHistory = new ArrayList<String>();
+		boardHistory.add(board.toString());
+		this.setGameState(GameState.PLAYING);
 	}
-
+	
 	@Override
 	public List<Move> getPossibleMoves(PlayerKind playerKind) {
 		List<Move> result = new ArrayList<Move>();
@@ -32,9 +32,9 @@ public class TablutState extends State {
 			{
 				//per evitare di avere due metodi che fanno la stessa cosa, controllo di chi devo controllare le mosse in questo if
 				if(  (  playerKind == PlayerKind.WHITE 
-						&& (getBoard().getPawn(x, y) == Pawn.WHITE || getBoard().getPawn(x, y) == Pawn.KING)
+						&& (board.getPawn(x, y) == Pawn.WHITE || board.getPawn(x, y) == Pawn.KING)
 						)
-						|| (playerKind == PlayerKind.BLACK && getBoard().getPawn(x, y) == Pawn.BLACK)   )
+						|| (playerKind == PlayerKind.BLACK && board.getPawn(x, y) == Pawn.BLACK)   )
 				{
 					boolean stopPrevHorizontal = false;
 					boolean stopPrevVertical = false;
@@ -106,7 +106,7 @@ public class TablutState extends State {
 		List<Move> result = new ArrayList<Move>();
 		
 		for (Move m : moves) {
-			Board temp = new TablutBoard(this.getBoard().getPawnBoard(), this.getBoard().getTileBoard());
+			Board temp = this.getBoard().clone();
 			
 			temp.applyMove(m);
 			
@@ -120,9 +120,9 @@ public class TablutState extends State {
 	
 	public boolean checkRepeatingBoardConfiguration(Board current) {
 		
-		for (TablutBoard b : boardHistory)
+		for (String b : boardHistory)
 		{
-			if (Arrays.deepEquals(b.getPawnBoard(), current.getPawnBoard()))
+			if (b.equals(current.toString()))
 			{
 				return true;
 			}
@@ -134,8 +134,11 @@ public class TablutState extends State {
 	@Override
 	public void applyMove(Move nextMove) {
 		getBoard().applyMove(nextMove);
-		
+
 		updateGameState();
+		
+		boardHistory.add(this.getBoard().toString());
+		this.setTurnOf(getTurnOf() == PlayerKind.WHITE ? PlayerKind.BLACK : PlayerKind.WHITE);
 		
 	}
 
@@ -144,14 +147,14 @@ public class TablutState extends State {
 		boolean kingCaptured = tb.isKingCaptured();
 		boolean kingEscaped = tb.isKingOnEscapeTile();
 		
-		if ( (kingCaptured && this.getMyKind() == PlayerKind.BLACK)
-			|| (kingEscaped && this.getMyKind() == PlayerKind.WHITE) )
+		if ( (kingCaptured && this.getTurnOf() == PlayerKind.BLACK)
+			|| (kingEscaped && this.getTurnOf() == PlayerKind.WHITE) )
 		{
 			this.setGameState(GameState.WIN);
 		}
-		else if ( (kingCaptured && this.getMyKind() == PlayerKind.WHITE)
-				|| (kingEscaped && this.getMyKind() == PlayerKind.BLACK) 
-				|| getPossibleMoves(getMyKind()).size() == 0)
+		else if ( (kingCaptured && this.getTurnOf() == PlayerKind.WHITE)
+				|| (kingEscaped && this.getTurnOf() == PlayerKind.BLACK) 
+				|| getPossibleMoves(getTurnOf()).size() == 0)
 		{
 			this.setGameState(GameState.LOSE);
 		}
@@ -171,15 +174,15 @@ public class TablutState extends State {
 	public boolean hasWon(PlayerKind playerKind) {
 		switch(playerKind) {
 		case WHITE:
-			if ( (this.getGameState() == GameState.WIN && this.getMyKind() == PlayerKind.WHITE)
-					|| (this.getGameState() == GameState.LOSE && this.getMyKind() == PlayerKind.BLACK) )
+			if ( (this.getGameState() == GameState.WIN && this.getTurnOf() == PlayerKind.WHITE)
+					|| (this.getGameState() == GameState.LOSE && this.getTurnOf() == PlayerKind.BLACK) )
 			{
 				return true;
 			}
 			return false;
 		case BLACK:
-			if ( (this.getGameState() == GameState.WIN && this.getMyKind() == PlayerKind.BLACK)
-					|| (this.getGameState() == GameState.LOSE && this.getMyKind() == PlayerKind.WHITE) )
+			if ( (this.getGameState() == GameState.WIN && this.getTurnOf() == PlayerKind.BLACK)
+					|| (this.getGameState() == GameState.LOSE && this.getTurnOf() == PlayerKind.WHITE) )
 			{
 				return true;
 			}
@@ -188,5 +191,14 @@ public class TablutState extends State {
 		
 		
 		return false;
+	}
+	
+	public String toString() {
+		return getBoard().toString();
+	}
+
+	@Override
+	public void undoMove(Move nextMove) {
+		
 	}
 }

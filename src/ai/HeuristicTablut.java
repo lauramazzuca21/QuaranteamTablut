@@ -2,6 +2,9 @@ package ai;
 
 import domain.Board;
 import domain.State;
+import domain.TablutState;
+import enums.Pawn;
+import enums.PlayerKind;
 
 public class HeuristicTablut implements HeuristicFunction{
 
@@ -16,23 +19,23 @@ public class HeuristicTablut implements HeuristicFunction{
 	 */
 
 	//da adattare una volta finalizzato PVS
-	private static final double WEIGTH1 = 500;
-	private static final double WEIGTH2 = 800;
-	private static final double WEIGTH3 = 40;
-	private static final double WEIGTH4 = 20;
-	private static final double WEIGTH5 = 1;
-	private static final double WEIGTH6 = 1;
-	private static final double WEIGTH7 = 15;
-	private static final double WEIGTH8 = 5;
+	private static final int WEIGTH1 = 500;
+	private static final int WEIGTH2 = 800;
+	private static final int WEIGTH3 = 40;
+	private static final int WEIGTH4 = 20;
+	private static final int WEIGTH5 = 1;
+	private static final int WEIGTH6 = 1;
+	private static final int WEIGTH7 = 15;
+	private static final int WEIGTH8 = 5;
 
 	
-	public static double getStateValue(State state) {		
+	public int getStateValue(State state) {		
 
-		if (state.hasWhitewon()) return 10000;
+		if (state.hasWon(PlayerKind.WHITE)) return 10000;
 
-		if (state.hasBlackWon()) return -10000;
+		if (state.hasWon(PlayerKind.BLACK)) return -10000;
 
-		double result = 0;
+		int result = 0;
 
 		/*
 		if (isKingReadyToWin(state))
@@ -43,8 +46,8 @@ public class HeuristicTablut implements HeuristicFunction{
 		*/
 		
 		// valutazioni sul numero di pezzi
-		result = result + (state.getWhitesCount() * WEIGTH3);
-		result = result - (state.getBlacksCount() * WEIGTH4);
+		result = result + (state.getBoard().getPawnCount(Pawn.WHITE)*WEIGTH3);
+		result = result - (state.getBoard().getPawnCount(Pawn.BLACK)*WEIGTH4);
 		
 		/*
 		//considerazioni sulle pedine nella zona del re
@@ -60,6 +63,7 @@ public class HeuristicTablut implements HeuristicFunction{
 		
 		return result;
 	}
+
 
 /*
 	private static boolean isKingInDanger(ITablutState state) {
@@ -100,24 +104,25 @@ public class HeuristicTablut implements HeuristicFunction{
 	private static boolean isKingReadyToWin(ITablutState state) {
 		int king[] = state.getCoordKing();
 		int x, y;
-		//se il percorso in orizzontale è libero e non c'è alcun accampamento
+		//se il percorso in orizzontale ï¿½ libero e non c'ï¿½ alcun accampamento
 		for (x = king[0] + 1; x < state.getState().getBoard().length; x++)
 			if (!state.getState().getPawn(x, king[1]).equals(Pawn.EMPTY) || state.isPawnAccampamento(x, king[1])) break;
 		if (x == state.getState().getBoard().length) return true;
 		for (x = king[0] - 1; x >= 0; x--)
 			if (!state.getState().getPawn(x, king[1]).equals(Pawn.EMPTY) || state.isPawnAccampamento(x, king[1])) break;
 		if (x < 0) return true;
-		//se il percorso in verticale è libero e non c'è alcun accampamento
+		//se il percorso in verticale ï¿½ libero e non c'ï¿½ alcun accampamento
 		for (y = king[1] + 1; y < state.getState().getBoard().length; y++)
 			if (!state.getState().getPawn(king[0], y).equals(Pawn.EMPTY) || state.isPawnAccampamento(king[0], y)) break;
 		if (y == state.getState().getBoard().length) return true;
 		for (y = king[1] - 1; y >= 0; y--)
 			if (!state.getState().getPawn(king[0], y).equals(Pawn.EMPTY) || state.isPawnAccampamento(king[0], y)) break;
 		if (y < 0) return true;
-		//altrimenti non è pronto a vincere	
+		//altrimenti non ï¿½ pronto a vincere	
 		return false;
 	}
 	*/
+	
 	
 	
 	
