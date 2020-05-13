@@ -1,10 +1,11 @@
 package test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
-import domain.AiPlayer;
-import domain.Game;
-import domain.TablutGame;
+import domain.*;
 import enums.PlayerKind;
 
 class TestAi {
@@ -12,34 +13,42 @@ class TestAi {
 	
 	@Test
 	void test_Alpha_Beta_Pruning_time_white() {
-		Game ourGame = new TablutGame(new AiPlayer("TheQuaranteam", PlayerKind.WHITE));
+		List<Player> players = new ArrayList<Player>();
 		
-		ourGame.loop(ourGame.getState());
-		System.out.println(ourGame.getState().toString());
+		players.add(new AiPlayer("TheQuaranteam", PlayerKind.WHITE));
+		players.add(new AiPlayer("Adversary", PlayerKind.BLACK));
+		
+		Game game = new TablutGame(players);
+		
+		game.loop();
+		System.out.println(game.getState().toString());
 	}
 	
 	@Test
 	void test_Alpha_Beta_Pruning_time_black() {
-		Game ourGame = new TablutGame(new AiPlayer("TheQuaranteam", PlayerKind.BLACK));
+		List<Player> players = new ArrayList<Player>();
 		
-		ourGame.getState().setTurnOf(PlayerKind.BLACK);
+		players.add(new AiPlayer("TheQuaranteam", PlayerKind.BLACK));
+		players.add(new AiPlayer("Adversary", PlayerKind.WHITE));
+
+		Game game = new TablutGame(players);
+		game.getState().setTurnOf(PlayerKind.BLACK);	
 		
-		ourGame.loop(ourGame.getState());
-		System.out.println(ourGame.getState().toString());
+		game.loop();
+		System.out.println(game.getState().toString());
 	}
 	
 	@Test
 	void test_Alpha_Beta_Pruning_10_turns() {
-		Game ourGame = new TablutGame(new AiPlayer("TheQuaranteam", PlayerKind.WHITE));
-		Game game = new TablutGame(new AiPlayer("Adversary", PlayerKind.BLACK));
+		List<Player> players = new ArrayList<Player>();
 		
+		players.add(new AiPlayer("TheQuaranteam", PlayerKind.WHITE));
+		players.add(new AiPlayer("Adversary", PlayerKind.BLACK));
+		
+		Game game = new TablutGame(players);
 		
 		for(int i = 0; i < 10; i++) {
-			ourGame.loop(i == 0 ? null : game.getState());
-			System.out.println(ourGame.getState().toString());
-			
-			game.loop(ourGame.getState());
-			System.out.println(game.getState().toString());
+			game.loop();
 		}
 	}
 

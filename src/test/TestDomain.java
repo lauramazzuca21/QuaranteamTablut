@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import domain.*;
 import enums.Loader;
 import enums.Pawn;
-import enums.PlayerKind;
 import enums.Tile;
 
 class TestDomain {
@@ -53,7 +52,7 @@ class TestDomain {
 		
 		TablutBoard tablut = new TablutBoard(Loader.JSON,  "resources/board.json");
 		
-		State tablutState = new TablutState(tablut, PlayerKind.WHITE);
+		State tablutState = new TablutState(tablut);
 		
 		List<Move> possibleMoves = tablutState.getPossibleMoves();
 		
@@ -70,7 +69,7 @@ class TestDomain {
 		
 		TablutBoard tablut = new TablutBoard(Loader.JSON,  "resources/board.json");
 		
-		State tablutState = new TablutState(tablut, PlayerKind.BLACK);
+		State tablutState = new TablutState(tablut);
 		
 		List<Move> possibleMoves = tablutState.getPossibleMoves();
 		

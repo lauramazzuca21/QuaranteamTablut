@@ -1,8 +1,9 @@
 package ai;
-import domain.Game;
+import java.util.List;
+
 import domain.State;
-import enums.PlayerKind;
 import domain.Move;
+import domain.Position;
 
 public class ResearchPVS {
 	HeuristicFunction heuristic= new HeuristicTablut();
@@ -13,9 +14,9 @@ public class ResearchPVS {
 		if( depth == 0 ) return quiesce(state, alpha, beta );
 		
 		boolean bSearchPv = true;
-		for (Move m : state.getPossibleMoves(state.getMyKind()))  { //da creare
+		for (Move m : state.getPossibleMoves())  { 
 			State newState = state;
-			newState.getBoard().applyMove(m);
+	        List<Position> eaten = newState.getBoard().applyMove(m);
 			
 			if ( bSearchPv ) {
 				score = -pvSearch(newState, -beta, -alpha, depth - 1);
@@ -25,7 +26,7 @@ public class ResearchPVS {
 				if ( score > alpha ) // in fail-soft ... && score < beta ) is common
 					score = -pvSearch(newState, -beta, -alpha, depth - 1); // re-search
 			}
-			
+			newState.getBoard().undoMove(m, eaten);
 			if( score >= beta )
 				return beta;   // fail-hard beta-cutoff
 			if( score > alpha ) {
@@ -43,10 +44,11 @@ public class ResearchPVS {
 	    if( alpha < stand_pat )
 	        alpha = stand_pat;
 
-	    for(Move m : state.getPossibleMoves(state.getMyKind())) {
+	    for(Move m : state.getPossibleMoves()) {
 	        State childState = state;
-	        childState.getBoard().applyMove(m);
+	        List<Position> eaten = childState.getBoard().applyMove(m);
 	        int score = -quiesce(childState, -beta, -alpha );
+	        childState.getBoard().undoMove(m, eaten);
 
 	        if( score >= beta )
 	            return beta;

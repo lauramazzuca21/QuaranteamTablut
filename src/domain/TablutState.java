@@ -12,12 +12,11 @@ public class TablutState extends State {
 
 	private ArrayList<String> boardHistory;
 	
-	public TablutState(Board board, PlayerKind myKind) {
-		super(board, myKind);
+	public TablutState(Board board) {
+		super(board, PlayerKind.WHITE);
 		boardHistory = new ArrayList<String>();
 		boardHistory.add(board.toString());
 		this.setGameState(GameState.PLAYING);
-		this.setTurnOf(PlayerKind.WHITE);
 	}
 	
 	@Override
@@ -148,14 +147,14 @@ public class TablutState extends State {
 		boolean kingCaptured = tb.isKingCaptured();
 		boolean kingEscaped = tb.isKingOnEscapeTile();
 		
-		if ( (kingCaptured && this.getMyKind() == PlayerKind.BLACK)
-			|| (kingEscaped && this.getMyKind() == PlayerKind.WHITE) )
+		if ( (kingCaptured && this.getTurnOf() == PlayerKind.BLACK)
+			|| (kingEscaped && this.getTurnOf() == PlayerKind.WHITE) )
 		{
 			this.setGameState(GameState.WIN);
 		}
-		else if ( (kingCaptured && this.getMyKind() == PlayerKind.WHITE)
-				|| (kingEscaped && this.getMyKind() == PlayerKind.BLACK) 
-				|| getPossibleMoves(getMyKind()).size() == 0)
+		else if ( (kingCaptured && this.getTurnOf() == PlayerKind.WHITE)
+				|| (kingEscaped && this.getTurnOf() == PlayerKind.BLACK) 
+				|| getPossibleMoves(getTurnOf()).size() == 0)
 		{
 			this.setGameState(GameState.LOSE);
 		}
@@ -168,22 +167,22 @@ public class TablutState extends State {
 
 	@Override
 	public List<Move> getPossibleMoves() {
-		return getPossibleMoves(getMyKind());
+		return getPossibleMoves(getTurnOf());
 	}
 
 	@Override
 	public boolean hasWon(PlayerKind playerKind) {
 		switch(playerKind) {
 		case WHITE:
-			if ( (this.getGameState() == GameState.WIN && this.getMyKind() == PlayerKind.WHITE)
-					|| (this.getGameState() == GameState.LOSE && this.getMyKind() == PlayerKind.BLACK) )
+			if ( (this.getGameState() == GameState.WIN && this.getTurnOf() == PlayerKind.WHITE)
+					|| (this.getGameState() == GameState.LOSE && this.getTurnOf() == PlayerKind.BLACK) )
 			{
 				return true;
 			}
 			return false;
 		case BLACK:
-			if ( (this.getGameState() == GameState.WIN && this.getMyKind() == PlayerKind.BLACK)
-					|| (this.getGameState() == GameState.LOSE && this.getMyKind() == PlayerKind.WHITE) )
+			if ( (this.getGameState() == GameState.WIN && this.getTurnOf() == PlayerKind.BLACK)
+					|| (this.getGameState() == GameState.LOSE && this.getTurnOf() == PlayerKind.WHITE) )
 			{
 				return true;
 			}

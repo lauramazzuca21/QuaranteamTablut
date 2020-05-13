@@ -9,13 +9,12 @@ public abstract class State implements Cloneable {
 
 	private Board board;
 
-	private PlayerKind myKind;
 	private PlayerKind turnOf;
 	private GameState currentState;
 
-	public State(Board board, PlayerKind myKind) {
+	public State(Board board, PlayerKind startingPlayer) {
 		this.board = board;
-		this.myKind = myKind;
+		turnOf = startingPlayer;
 		currentState = GameState.PLAYING;
 	}
 	
@@ -39,9 +38,9 @@ public abstract class State implements Cloneable {
 		return currentState;
 	}
 	
-	public PlayerKind getMyKind() {
-		return myKind;
-	}
+//	public PlayerKind getMyKind() {
+//		return myKind;
+//	}
 	
 	public void setGameState(GameState currentState) {
 		this.currentState = currentState;
