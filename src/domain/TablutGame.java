@@ -30,6 +30,9 @@ public class TablutGame extends Game {
 		}
 	}
 	
+	
+
+	
 	private void checkGameState() {
 		
 		if (state.getGameState() == GameState.WIN)
