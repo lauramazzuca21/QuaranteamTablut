@@ -67,18 +67,21 @@ public class HeuristicTablut implements HeuristicFunction{
 		return result;
 	}
 
-
-	private static boolean isKingInDanger(State state) {
+	
+//	private boolean PawnInDanger(State state) {
+//		TablutBoard tb = (TablutBoard) state.getBoard();
+//
+//		for
+//	}
+	
+	
+	
+	private boolean isKingInDanger(State state) {
 
 		TablutBoard tb = (TablutBoard) state.getBoard();
 		Position kingpos = tb.getKingPosition();
 		
-		int possibileCattura = 0;
-
-		if (state.getBoard().getPawn(kingpos.getX()-1, kingpos.getY()).equals(Pawn.BLACK)) possibileCattura++;
-		if (state.getBoard().getPawn(kingpos.getX()+ 1, kingpos.getY()).equals(Pawn.BLACK)) possibileCattura++;
-		if (state.getBoard().getPawn(kingpos.getX(), kingpos.getY() - 1).equals(Pawn.BLACK)) possibileCattura++;
-		if (state.getBoard().getPawn(kingpos.getX(), kingpos.getY() + 1).equals(Pawn.BLACK)) possibileCattura++;
+		int possibileCattura = tb.countKingSurrounded();
 
 		if (kingpos.getX() == 4) {
 			if (kingpos.getY() == 4 && possibileCattura == 3) return true; // trono
@@ -103,7 +106,7 @@ public class HeuristicTablut implements HeuristicFunction{
 	}
 
 	
-	private static boolean isKingReadyToWin(State state) {
+	private boolean isKingReadyToWin(State state) {
 		TablutBoard tb = (TablutBoard) state.getBoard();
 		Position kingpos = tb.getKingPosition();
 		

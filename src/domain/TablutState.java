@@ -132,13 +132,15 @@ public class TablutState extends State {
 	}
 
 	@Override
-	public void applyMove(Move nextMove) {
-		getBoard().applyMove(nextMove);
+	public List<Position> applyMove(Move nextMove) {
+		List<Position> eaten = getBoard().applyMove(nextMove);
 
 		updateGameState();
 		
 		boardHistory.add(this.getBoard().toString());
 		this.setTurnOf(getTurnOf() == PlayerKind.WHITE ? PlayerKind.BLACK : PlayerKind.WHITE);
+		
+		return eaten;
 		
 	}
 
@@ -198,7 +200,14 @@ public class TablutState extends State {
 	}
 
 	@Override
-	public void undoMove(Move nextMove) {
+	public void undoMove(Move nextMove, List<Position> eaten) {
+		
+		boardHistory.remove(this.getBoard().toString());
+
+		getBoard().undoMove(nextMove, eaten);
+		this.setGameState(GameState.PLAYING);
+		
+		this.setTurnOf(getTurnOf() == PlayerKind.WHITE ? PlayerKind.BLACK : PlayerKind.WHITE);
 		
 	}
 }

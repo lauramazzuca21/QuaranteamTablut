@@ -48,8 +48,7 @@ public abstract class State implements Cloneable {
 	
 	public abstract boolean hasWon(PlayerKind playerKind);
 
-	public abstract void applyMove(Move nextMove);
-	public abstract void undoMove(Move nextMove);
+	public abstract List<Position> applyMove(Move nextMove);
 
 	public abstract List<Move> getPossibleMoves();
 	public abstract List<Move> getPossibleMoves(PlayerKind playerKind);
@@ -69,5 +68,6 @@ public abstract class State implements Cloneable {
 		return newState;
 	}
 
+	public abstract void undoMove(Move nextMove, List<Position> eaten) ;
 	
 }

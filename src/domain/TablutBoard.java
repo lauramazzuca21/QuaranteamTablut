@@ -58,7 +58,7 @@ public class TablutBoard extends Board {
 			}
 		}
 		
-		if (getPawn(m.getStarting().getX(), m.getStarting().getY()) == Pawn.KING)
+		if (getPawn(m.getStarting()) == Pawn.KING)
 			kingPosition = m.getEnding();
 		
 		super.applyMove(m);
@@ -102,10 +102,11 @@ public class TablutBoard extends Board {
 	}
 	
 	public boolean isKingCaptured() {
-		
-		if ( (getTile(kingPosition) == Tile.CASTLE && countKingSurrounded() == 4)
-				|| (isKingAdiacentToCastle() && countKingSurrounded() == 3)
-				|| countKingSurrounded() == 2)
+		int kingSurrounded = countKingSurrounded();
+		if ( (getTile(kingPosition) == Tile.CASTLE && kingSurrounded == 4)
+				|| (isKingAdiacentToCastle() && kingSurrounded == 3)
+				|| kingSurrounded == 2 && (surroundedOnX(kingPosition) || surroundedOnY(kingPosition))
+				|| surroundedAdiacentToCitadel(kingPosition))
 		{
 			return true;
 		}
@@ -113,6 +114,63 @@ public class TablutBoard extends Board {
 		return false;
 	}
 	
+	private boolean surroundedAdiacentToCitadel(Position position) {
+		Pawn type = getPawn(position);
+		Pawn precPawn = Pawn.EMPTY;
+		Tile precTile = Tile.EMPTY;
+		for (Position p : position.getHorizontalNeighbors(DIM, DIM))
+		{
+			if ( (precPawn == Pawn.BLACK && getTile(p) == Tile.CAMP)
+				|| (precTile == Tile.CAMP && getPawn(p) == Pawn.BLACK) ) {
+				return true;
+			}
+			
+			precPawn = getPawn(p);
+			precTile = getTile(p);
+		}
+		
+		for (Position p : position.getVerticalNeighbors(DIM, DIM))
+		{
+			if ( (precPawn == Pawn.BLACK && getTile(p) == Tile.CAMP)
+				|| (precTile == Tile.CAMP && getPawn(p) == Pawn.BLACK) ) {
+				return true;
+			}
+			
+			precPawn = getPawn(p);
+			precTile = getTile(p);
+		}
+		
+		return false;
+	}
+	
+	private boolean surroundedOnX(Position position) {
+		Pawn type = getPawn(position);
+		int surround = 0;
+		for (Position p : position.getHorizontalNeighbors(DIM, DIM))
+		{
+			Pawn onSide = getPawn(p);
+			if ( (onSide == Pawn.BLACK && type == Pawn.WHITE) || (onSide == Pawn.WHITE && type == Pawn.BLACK)) {
+				surround++;
+			}
+		}
+		
+		return surround == 2;
+	}
+	
+	private boolean surroundedOnY(Position position) {
+		Pawn type = getPawn(position);
+		int surround = 0;
+		for (Position p : position.getVerticalNeighbors(DIM, DIM))
+		{
+			Pawn onSide = getPawn(p);
+			if ( (onSide == Pawn.BLACK && type == Pawn.WHITE) || (onSide == Pawn.WHITE && type == Pawn.BLACK)) {
+				surround++;
+			}
+		}
+		
+		return surround == 2;
+	}
+
 	public boolean isKingOnEscapeTile() {
 		if (getTile(kingPosition) == Tile.ESCAPE)
 		{
@@ -121,7 +179,7 @@ public class TablutBoard extends Board {
 		return false;
 	}
 	
-	private int countKingSurrounded() {
+	public int countKingSurrounded() {
 		int result = 0;
 		
 		for(Position p : kingPosition.getOrthogonalNeighbors(DIM, DIM))
@@ -153,14 +211,16 @@ public class TablutBoard extends Board {
 		Position endingPosition = move.getEnding();		
 		
 		if (getPawn(endingPosition.getNextPositionX(DIM)) == Pawn.BLACK 
-				&& (getPawn(endingPosition.getNextPositionX(DIM).getNextPositionX(DIM)) == Pawn.WHITE 
+				&& (getPawn(endingPosition.getNextPositionX(DIM).getNextPositionX(DIM)) == Pawn.WHITE
+				|| getTile(endingPosition.getNextPositionX(DIM).getNextPositionX(DIM)) == Tile.CAMP
 				|| getPawn(endingPosition.getNextPositionX(DIM).getNextPositionX(DIM)) == Pawn.KING) )
 		{
 			eatenPawns.add(endingPosition.getNextPositionX(DIM));
 		}
 		
 		if (getPawn(endingPosition.getPreviousPositionX()) == Pawn.BLACK 
-				&& (getPawn(endingPosition.getPreviousPositionX().getPreviousPositionX()) == Pawn.WHITE 
+				&& (getPawn(endingPosition.getPreviousPositionX().getPreviousPositionX()) == Pawn.WHITE
+				|| getTile(endingPosition.getPreviousPositionX().getPreviousPositionX()) == Tile.CAMP
 				|| getPawn(endingPosition.getPreviousPositionX().getPreviousPositionX()) == Pawn.KING) )
 		{
 			eatenPawns.add(endingPosition.getPreviousPositionX());
@@ -168,6 +228,7 @@ public class TablutBoard extends Board {
 		
 		if (getPawn(endingPosition.getNextPositionY(DIM)) == Pawn.BLACK 
 				&& (getPawn(endingPosition.getNextPositionY(DIM).getNextPositionY(DIM)) == Pawn.WHITE 
+					|| getTile(endingPosition.getNextPositionY(DIM).getNextPositionY(DIM)) == Tile.CAMP
 				|| getPawn(endingPosition.getNextPositionY(DIM).getNextPositionY(DIM)) == Pawn.KING) )
 		{
 			eatenPawns.add(endingPosition.getNextPositionY(DIM));
@@ -175,6 +236,7 @@ public class TablutBoard extends Board {
 		
 		if (getPawn(endingPosition.getPreviousPositionY()) == Pawn.BLACK 
 				&& (getPawn(endingPosition.getPreviousPositionY().getPreviousPositionY()) == Pawn.WHITE 
+						|| getTile(endingPosition.getPreviousPositionY().getPreviousPositionY()) == Tile.CAMP
 				|| getPawn(endingPosition.getPreviousPositionY().getPreviousPositionY()) == Pawn.KING) )
 		{
 			eatenPawns.add(endingPosition.getPreviousPositionY());
@@ -251,6 +313,31 @@ public class TablutBoard extends Board {
 		
 		return result;
 		
+	}
+
+	@Override
+	public void undoMove(Move m, List<Position> eaten) {
+		
+		Pawn pawnType = getPawn(m.getEnding());
+		
+		super.removePawn(m.getEnding());
+		
+		getPawnBoard()[m.getStartX()][m.getStartY()] = pawnType;
+		
+		if (pawnType == Pawn.KING)
+			kingPosition = m.getStarting();
+		
+		if( eaten == null)
+				return;
+		
+		for (Position p : eaten)
+		{
+			Pawn eatenPawnType = pawnType == Pawn.WHITE || pawnType == Pawn.KING ? Pawn.BLACK : Pawn.WHITE;
+			getPawnBoard()[p.getX()][p.getY()] = eatenPawnType;
+			if (eatenPawnType == Pawn.BLACK) blackPawns++;
+			else whitePawns++;
+			
+		}
 	}
 	
 }

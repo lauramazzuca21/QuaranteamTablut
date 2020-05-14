@@ -10,7 +10,7 @@ import enums.PlayerKind;
 
 class TestAi {
 
-	
+	/*
 	@Test
 	void test_Alpha_Beta_Pruning_time_white() {
 		List<Player> players = new ArrayList<Player>();
@@ -21,7 +21,7 @@ class TestAi {
 		Game game = new TablutGame(players);
 		
 		game.loop();
-		System.out.println(game.getState().toString());
+		System.out.println("=================END OF TEST 1=================");
 	}
 	
 	@Test
@@ -35,8 +35,9 @@ class TestAi {
 		game.getState().setTurnOf(PlayerKind.BLACK);	
 		
 		game.loop();
-		System.out.println(game.getState().toString());
+		System.out.println("=================END OF TEST 2=================");
 	}
+	*/
 	
 	@Test
 	void test_Alpha_Beta_Pruning_10_turns() {
@@ -49,7 +50,10 @@ class TestAi {
 		
 		for(int i = 0; i < 10; i++) {
 			game.loop();
+			
 		}
+		
+		System.out.println("=================END OF TEST 3=================");
 	}
 
 }

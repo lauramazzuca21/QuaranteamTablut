@@ -13,8 +13,7 @@ import enums.PlayerKind;
 public class ResearchAlphaBeta {
 
 		
-		//@Matteo non � meglio usare int??
-	private Map<Double, Move> mapMoves;
+	private Map<Integer, Move> mapMoves;
 	private int maxDepth;
 	private HeuristicFunction h;
 	
@@ -31,15 +30,15 @@ public class ResearchAlphaBeta {
 	public Move AlphaBetaSearch(HeuristicFunction h, int  maxDepth, State ts) {
 
 		this.h = h;
-		mapMoves = new HashMap<Double, Move>();
+		mapMoves = new HashMap<Integer, Move>();
 		this.maxDepth = maxDepth;
 		
 		if(ts.getTurnOf().equals(PlayerKind.WHITE)) {	//MAX player
-			double v = MaxValue(maxDepth, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, ts);
+			int v = MaxValue(maxDepth, Integer.MIN_VALUE, Integer.MAX_VALUE, ts);
 			return mapMoves.get(v);	//si recupera l'azione con il valore v più alto
 		}
 		else if(ts.getTurnOf().equals(PlayerKind.BLACK)) {	//MIN player
-			double v = MinValue(maxDepth, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, ts);
+			int v = MinValue(maxDepth, Integer.MIN_VALUE, Integer.MAX_VALUE, ts);
 			return mapMoves.get(v);	//si recupera l'azione con il valore v più basso
 		}			
 			return null;
@@ -59,24 +58,24 @@ public class ResearchAlphaBeta {
 	 */
 	
 	//@Matteo manca il confronto sul percorso minimo , forse la mappa non basta , per ora provo a usare depth in cutoff
-	private double MaxValue(int depth, double alpha, double beta, State state) {
+	private int MaxValue(int depth, int alpha, int beta, State state) {
 		//all'interuzione si ritorna un valore 
 		if (cutoff(depth, state)) {
 			return h.getStateValue(state) - depth;
 		}
-		double tmp;
-		double v = Double.NEGATIVE_INFINITY;
+		int tmp;
+		int v = Integer.MIN_VALUE;
 
 		List<Move> moves = state.getPossibleMoves(PlayerKind.WHITE);
 
 		for (Move m : moves) {											//= per ogni coppia <azione, stato>
 			//create childstate
-			List<Position> eaten = state.getBoard().applyMove(m);
+			List<Position> eaten = state.applyMove(m);
 			
 
 			tmp=MinValue(depth - 1, alpha, beta, state);
 			
-			state.getBoard().undoMove(m, eaten);
+			state.undoMove(m, eaten);
 			
 				//tmp strettamente maggiore di v altirmenti inserisce nella mappa anche i valori infiniti
 			if(this.maxDepth == depth && tmp > v) {
@@ -106,13 +105,13 @@ public class ResearchAlphaBeta {
 	 * @param state
 	 * @return
 	 */
-	private double MinValue(int depth, double alpha, double beta, State state) {
+	private int MinValue(int depth, int alpha, int beta, State state) {
 		//all'interuzione si ritorna un valore 
 		if (cutoff(depth, state)) {
 			return h.getStateValue(state) + depth;
 		}
-		double tmp;
-		double v = Double.POSITIVE_INFINITY;
+		int tmp;
+		int v = Integer.MAX_VALUE;
 
 		
 		
@@ -121,11 +120,11 @@ public class ResearchAlphaBeta {
 		for (Move m : moves) {											
 			//create childstate
 //			State childState = state.deepCopy();
-			List<Position> eaten = state.getBoard().applyMove(m);
+			List<Position> eaten = state.applyMove(m);
 			
 			tmp=MaxValue(depth - 1, alpha, beta, state);
 			
-			state.getBoard().undoMove(m, eaten);
+			state.undoMove(m, eaten);
 			
 			if(this.maxDepth==depth && tmp < v) {
 				this.mapMoves.put(tmp, m);	

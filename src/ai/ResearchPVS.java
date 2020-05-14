@@ -16,7 +16,7 @@ public class ResearchPVS {
 		boolean bSearchPv = true;
 		for (Move m : state.getPossibleMoves())  { 
 			State newState = state;
-	        List<Position> eaten = newState.getBoard().applyMove(m);
+	        List<Position> eaten = newState.applyMove(m);
 			
 			if ( bSearchPv ) {
 				score = -pvSearch(newState, -beta, -alpha, depth - 1);
@@ -26,7 +26,7 @@ public class ResearchPVS {
 				if ( score > alpha ) // in fail-soft ... && score < beta ) is common
 					score = -pvSearch(newState, -beta, -alpha, depth - 1); // re-search
 			}
-			newState.getBoard().undoMove(m, eaten);
+			newState.undoMove(m, eaten);
 			if( score >= beta )
 				return beta;   // fail-hard beta-cutoff
 			if( score > alpha ) {
@@ -46,9 +46,9 @@ public class ResearchPVS {
 
 	    for(Move m : state.getPossibleMoves()) {
 	        State childState = state;
-	        List<Position> eaten = childState.getBoard().applyMove(m);
+	        List<Position> eaten = childState.applyMove(m);
 	        int score = -quiesce(childState, -beta, -alpha );
-	        childState.getBoard().undoMove(m, eaten);
+	        childState.undoMove(m, eaten);
 
 	        if( score >= beta )
 	            return beta;

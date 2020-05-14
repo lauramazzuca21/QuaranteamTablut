@@ -22,6 +22,8 @@ public class TablutGame extends Game {
 			Move nextMove = p.getNextMove(state);
 			
 			state.applyMove(nextMove);
+			System.out.println("turno "+p.getKind());
+
 			System.out.println(state.toString());
 
 			checkGameState();
