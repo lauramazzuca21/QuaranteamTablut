@@ -16,7 +16,7 @@ public class AiPlayer extends Player {
 
 	@Override
 	public Move getNextMove(State newState) {	
-		return ab.AlphaBetaSearch(new HeuristicTablut(), 7, newState);
+		return ab.AlphaBetaSearch(new HeuristicTablut(), 5, newState);
 //		return pvs.pvSearch(newState, Integer.MAX_VALUE, Integer.MIN_VALUE, 3);
 	}
 

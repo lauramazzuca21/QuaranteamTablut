@@ -47,14 +47,14 @@ public class TablutBoard extends Board {
 	}
 	
 	@Override
-	public List<Position> applyMove(Move m) {
-		List<Position> eaten = getEatenPawns(m);
+	public Position[] applyMove(Move m) {
+		Position[] eaten = getEatenPawns(m);
 		
 		if(eaten != null)
 		{
 			for (Position p : eaten)
 			{
-				removePawn(p);
+				if (p != null) removePawn(p);
 			}
 		}
 		
@@ -84,7 +84,7 @@ public class TablutBoard extends Board {
 		super.removePawn(position);
 	}
 	
-	public List<Position> getEatenPawns(Move move) {
+	public Position[] getEatenPawns(Move move) {
 		Pawn moving = getPawnBoard()[move.getStartX()][move.getStartY()];
 		
 		switch(moving)
@@ -115,9 +115,12 @@ public class TablutBoard extends Board {
 	}
 	
 	private boolean surroundedAdiacentToCitadel(Position position) {
-		Pawn type = getPawn(position);
+//		Pawn type = getPawn(position);
 		Pawn precPawn = Pawn.EMPTY;
 		Tile precTile = Tile.EMPTY;
+		
+//		Position[] neighbors = position.getHorizontalNeighbors(DIM, DIM);
+				
 		for (Position p : position.getHorizontalNeighbors(DIM, DIM))
 		{
 			if ( (precPawn == Pawn.BLACK && getTile(p) == Tile.CAMP)
@@ -205,84 +208,104 @@ public class TablutBoard extends Board {
 		return false;
 	}
 
-	private List<Position> getWhiteEatenPawns(Move move)
+	private Position[] getWhiteEatenPawns(Move move)
 	{
-		List<Position> eatenPawns = new ArrayList<Position>();
+		Position[] eatenPawns = new Position[4];
 		Position endingPosition = move.getEnding();		
+		
+		int idx = 0;
 		
 		if (getPawn(endingPosition.getNextPositionX(DIM)) == Pawn.BLACK 
 				&& (getPawn(endingPosition.getNextPositionX(DIM).getNextPositionX(DIM)) == Pawn.WHITE
-				|| getTile(endingPosition.getNextPositionX(DIM).getNextPositionX(DIM)) == Tile.CAMP
-				|| getPawn(endingPosition.getNextPositionX(DIM).getNextPositionX(DIM)) == Pawn.KING) )
+					|| (getTile(endingPosition.getNextPositionX(DIM).getNextPositionX(DIM)) == Tile.CAMP
+						&& getTile(endingPosition.getNextPositionX(DIM)) == Tile.EMPTY)
+					|| getPawn(endingPosition.getNextPositionX(DIM).getNextPositionX(DIM)) == Pawn.KING) )
 		{
-			eatenPawns.add(endingPosition.getNextPositionX(DIM));
+			eatenPawns[idx] = endingPosition.getNextPositionX(DIM);
+			idx++;
 		}
 		
 		if (getPawn(endingPosition.getPreviousPositionX()) == Pawn.BLACK 
 				&& (getPawn(endingPosition.getPreviousPositionX().getPreviousPositionX()) == Pawn.WHITE
-				|| getTile(endingPosition.getPreviousPositionX().getPreviousPositionX()) == Tile.CAMP
+				|| (getTile(endingPosition.getPreviousPositionX().getPreviousPositionX()) == Tile.CAMP
+						&& getTile(endingPosition.getPreviousPositionX()) == Tile.EMPTY)
 				|| getPawn(endingPosition.getPreviousPositionX().getPreviousPositionX()) == Pawn.KING) )
 		{
-			eatenPawns.add(endingPosition.getPreviousPositionX());
+			eatenPawns[idx] = endingPosition.getPreviousPositionX();
+			idx++;
 		}
 		
 		if (getPawn(endingPosition.getNextPositionY(DIM)) == Pawn.BLACK 
 				&& (getPawn(endingPosition.getNextPositionY(DIM).getNextPositionY(DIM)) == Pawn.WHITE 
-					|| getTile(endingPosition.getNextPositionY(DIM).getNextPositionY(DIM)) == Tile.CAMP
+					|| (getTile(endingPosition.getNextPositionY(DIM).getNextPositionY(DIM)) == Tile.CAMP
+						&& getTile(endingPosition.getNextPositionY(DIM)) == Tile.EMPTY)
 				|| getPawn(endingPosition.getNextPositionY(DIM).getNextPositionY(DIM)) == Pawn.KING) )
 		{
-			eatenPawns.add(endingPosition.getNextPositionY(DIM));
+			eatenPawns[idx] = endingPosition.getNextPositionY(DIM);
+			idx++;
 		}
 		
 		if (getPawn(endingPosition.getPreviousPositionY()) == Pawn.BLACK 
 				&& (getPawn(endingPosition.getPreviousPositionY().getPreviousPositionY()) == Pawn.WHITE 
-						|| getTile(endingPosition.getPreviousPositionY().getPreviousPositionY()) == Tile.CAMP
+						|| (getTile(endingPosition.getPreviousPositionY().getPreviousPositionY()) == Tile.CAMP
+						&& getTile(endingPosition.getPreviousPositionY()) == Tile.EMPTY)
 				|| getPawn(endingPosition.getPreviousPositionY().getPreviousPositionY()) == Pawn.KING) )
 		{
-			eatenPawns.add(endingPosition.getPreviousPositionY());
+			eatenPawns[idx] = endingPosition.getPreviousPositionY();
+			idx++;
 		}
 		
-		return eatenPawns;
+		return idx == 0 ? null : eatenPawns;
 	}
 	
 	
-	private List<Position> getBlackEatenPawns(Move move) {
-		List<Position> eatenPawns = new ArrayList<Position>();
+	private Position[] getBlackEatenPawns(Move move) {
+		Position[] eatenPawns = new Position[4];
 		Position endingPosition = move.getEnding();
 
+		int idx = 0;
+		
 		if (getPawn(endingPosition.getNextPositionX(DIM)) == Pawn.WHITE 
 				&& (getPawn(endingPosition.getNextPositionX(DIM).getNextPositionX(DIM)) == Pawn.BLACK 
-				|| getTile(endingPosition.getNextPositionX(DIM).getNextPositionX(DIM)) == Tile.CAMP
+						|| (getTile(endingPosition.getNextPositionX(DIM).getNextPositionX(DIM)) == Tile.CAMP
+						&& getTile(endingPosition.getNextPositionX(DIM)) == Tile.EMPTY)
 				|| getTile(endingPosition.getNextPositionX(DIM).getNextPositionX(DIM)) == Tile.CASTLE) )
 		{
-			eatenPawns.add(endingPosition.getNextPositionX(DIM));
+			eatenPawns[idx] = endingPosition.getNextPositionX(DIM);
+			idx++;
 		}
 		
 		if (getPawn(endingPosition.getPreviousPositionX()) == Pawn.WHITE 
 				&& (getPawn(endingPosition.getPreviousPositionX().getPreviousPositionX()) == Pawn.BLACK 
-				|| getTile(endingPosition.getPreviousPositionX().getPreviousPositionX()) == Tile.CAMP
+						|| (getTile(endingPosition.getPreviousPositionX().getPreviousPositionX()) == Tile.CAMP
+						&& getTile(endingPosition.getPreviousPositionX()) == Tile.EMPTY)
 				|| getTile(endingPosition.getPreviousPositionX().getPreviousPositionX()) == Tile.CASTLE) )
 		{
-			eatenPawns.add(endingPosition.getPreviousPositionX());
+			eatenPawns[idx] = endingPosition.getPreviousPositionX();
+			idx++;
 		}
 		
 		if (getPawn(endingPosition.getNextPositionY(DIM)) == Pawn.WHITE 
 				&& (getPawn(endingPosition.getNextPositionY(DIM).getNextPositionY(DIM)) == Pawn.BLACK 
-				|| getTile(endingPosition.getNextPositionY(DIM).getNextPositionY(DIM)) == Tile.CAMP
+						|| (getTile(endingPosition.getNextPositionY(DIM).getNextPositionY(DIM)) == Tile.CAMP
+						&& getTile(endingPosition.getNextPositionY(DIM)) == Tile.EMPTY)
 				|| getTile(endingPosition.getNextPositionY(DIM).getNextPositionY(DIM)) == Tile.CASTLE) )
 		{
-			eatenPawns.add(endingPosition.getNextPositionY(DIM));
+			eatenPawns[idx] = endingPosition.getNextPositionY(DIM);
+			idx++;
 		}
 		
 		if (getPawn(endingPosition.getPreviousPositionY()) == Pawn.WHITE 
 				&& (getPawn(endingPosition.getPreviousPositionY().getPreviousPositionY()) == Pawn.BLACK 
-				|| getTile(endingPosition.getPreviousPositionY().getPreviousPositionY()) == Tile.CAMP
+					|| (getTile(endingPosition.getPreviousPositionY().getPreviousPositionY()) == Tile.CAMP
+					&& getTile(endingPosition.getPreviousPositionY()) == Tile.EMPTY)
 				|| getTile(endingPosition.getPreviousPositionY().getPreviousPositionY()) == Tile.CASTLE) )
 		{
-			eatenPawns.add(endingPosition.getPreviousPositionY());
+			eatenPawns[idx] = endingPosition.getPreviousPositionY();
+			idx++;
 		}
 		
-		return eatenPawns;
+		return idx == 0 ? null : eatenPawns;
 	}
 	
 	public int getPawnCount(Pawn tipo) {
@@ -297,26 +320,29 @@ public class TablutBoard extends Board {
 	}
 	
 	public String toString() {
-		String result = "\t0\t1\t2\t3\t4\t5\t6\t7\t8\n";
+		StringBuilder builder = new StringBuilder();
+		builder.append("\t0\t1\t2\t3\t4\t5\t6\t7\t8\n");
 		
 		for (int x = 0; x < 9; x++)
 		{
-			result += x + "\t";
+			builder.append(x);
+			builder.append("\t");
 			for (int y = 0; y < 9; y++)
 			{
-				result += getPawn(x, y) + "\t";
+				builder.append(getPawn(x, y));
+				builder.append("\t");
 			}
-			result+= "\n";
+			builder.append("\n");
 		}
 				
 		
 		
-		return result;
+		return builder.toString();
 		
 	}
 
 	@Override
-	public void undoMove(Move m, List<Position> eaten) {
+	public void undoMove(Move m, Position[] eaten) {
 		
 		Pawn pawnType = getPawn(m.getEnding());
 		
@@ -330,13 +356,14 @@ public class TablutBoard extends Board {
 		if( eaten == null)
 				return;
 		
-		for (Position p : eaten)
+		for (int i = 0; i < eaten.length; i++)
 		{
+			if (eaten[i] == null)
+				break;
 			Pawn eatenPawnType = pawnType == Pawn.WHITE || pawnType == Pawn.KING ? Pawn.BLACK : Pawn.WHITE;
-			getPawnBoard()[p.getX()][p.getY()] = eatenPawnType;
+			getPawnBoard()[eaten[i].getX()][eaten[i].getY()] = eatenPawnType;
 			if (eatenPawnType == Pawn.BLACK) blackPawns++;
 			else whitePawns++;
-			
 		}
 	}
 	

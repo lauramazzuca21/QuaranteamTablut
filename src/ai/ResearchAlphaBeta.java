@@ -1,5 +1,7 @@
 package ai;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,16 +63,23 @@ public class ResearchAlphaBeta {
 	private int MaxValue(int depth, int alpha, int beta, State state) {
 		//all'interuzione si ritorna un valore 
 		if (cutoff(depth, state)) {
+			//System.out.println("[MAX] CUTOFF" );
 			return h.getStateValue(state) - depth;
 		}
 		int tmp;
 		int v = Integer.MIN_VALUE;
 
+		//System.out.println("[MAX] Depth: " + depth );
+		//System.out.println("[MAX] Alpha: " + alpha );
+		//System.out.println("[MAX] Beta: " + beta );
+		
 		List<Move> moves = state.getPossibleMoves(PlayerKind.WHITE);
 
+		//System.out.println("[MAX] Possible Moves: " + moves.size() );
+				
 		for (Move m : moves) {											//= per ogni coppia <azione, stato>
 			//create childstate
-			List<Position> eaten = state.applyMove(m);
+			Position[] eaten = state.applyMove(m);
 			
 
 			tmp=MinValue(depth - 1, alpha, beta, state);
@@ -86,11 +95,16 @@ public class ResearchAlphaBeta {
 
 			v = Math.max(v, tmp);
 			if (v >= beta) {
+				//System.out.println("[MAX] Return Value: " + v );
+				//System.out.println("[MAX] Time elapsed: " + (System.currentTimeMillis() - now) );
 				return v;
 			}
 
 			alpha = Math.max(alpha, v);
 		}
+		
+		//System.out.println("[MAX] Return Value: " + v );
+		//System.out.println("[MAX] Time elapsed: " + (System.currentTimeMillis() - now) );
 		return v;
 	
 
@@ -108,19 +122,26 @@ public class ResearchAlphaBeta {
 	private int MinValue(int depth, int alpha, int beta, State state) {
 		//all'interuzione si ritorna un valore 
 		if (cutoff(depth, state)) {
+			//System.out.println("[MIN] CUTOFF" );
 			return h.getStateValue(state) + depth;
 		}
 		int tmp;
 		int v = Integer.MAX_VALUE;
 
-		
+		//System.out.println("[MIN] Depth: " + depth );
+		//System.out.println("[MIN] Alpha: " + alpha );
+		//System.out.println("[MIN] Beta: " + beta );
 		
 		List<Move> moves = state.getPossibleMoves(PlayerKind.BLACK);
+		
+		//System.out.println("[MIN] Possible Moves: " + moves.size() );
+		
+		long now = System.currentTimeMillis();
 		
 		for (Move m : moves) {											
 			//create childstate
 //			State childState = state.deepCopy();
-			List<Position> eaten = state.applyMove(m);
+			Position[] eaten = state.applyMove(m);
 			
 			tmp=MaxValue(depth - 1, alpha, beta, state);
 			
@@ -133,10 +154,14 @@ public class ResearchAlphaBeta {
 			
 			v = Math.min(v,tmp);
 			if (v <= alpha) {
+				//System.out.println("[MIN] Return Value: " + v );
+				//System.out.println("[MIN] Time elapsed: " + (System.currentTimeMillis() - now) );
 				return v;
 			}
 			beta = Math.min(beta, v);
 		}
+		//System.out.println("[MIN] Return Value: " + v );
+		//System.out.println("[MIN] Time elapsed: " + (System.currentTimeMillis() - now) );
 		return v;
 
 	}

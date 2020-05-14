@@ -1,6 +1,5 @@
 package domain;
 import java.util.Arrays;
-import java.util.List;
 
 import enums.Pawn;
 import enums.Tile;
@@ -63,7 +62,7 @@ public abstract class Board implements Cloneable {
 		pawnBoard[position.getX()][position.getY()] = Pawn.EMPTY;
 	}
 	
-	public List<Position> applyMove(Move move) {
+	public Position[] applyMove(Move move) {
 		Pawn toMove = pawnBoard[move.getStartX()][move.getStartY()];
 		
 		pawnBoard[move.getStartX()][move.getStartY()] = Pawn.EMPTY;
@@ -93,10 +92,6 @@ public abstract class Board implements Cloneable {
 			return Tile.EMPTY;
 		return tileBoard[position.getX()][position.getY()];
 	}
-	
-	public Board deepCopy() {
-		return this.clone();
-	}
 
 	@Override
 	protected Board clone() {	
@@ -119,7 +114,5 @@ public abstract class Board implements Cloneable {
 	}
 
 	public abstract int getPawnCount(Pawn pawnType);
-
-	public abstract void undoMove(Move m, List<Position> eaten);
-	
+	public abstract void undoMove(Move m, Position[] eaten);
 }
