@@ -16,5 +16,6 @@ public abstract class Game {
 	public State getState() {
 		return state;
 	}
+
 	
 }

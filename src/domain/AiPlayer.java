@@ -4,6 +4,7 @@ import enums.PlayerKind;
 import ai.HeuristicTablut;
 import ai.ResearchAlphaBeta;
 import ai.ResearchPVS;
+import aiMCTS.MCTSearch;
 
 public class AiPlayer extends Player {
 
@@ -11,6 +12,8 @@ public class AiPlayer extends Player {
 	ResearchPVS pvs = new ResearchPVS();
 	int turn;
 	
+	MCTSearch mtcs = new MCTSearch();
+
 	public AiPlayer(String id, PlayerKind kind) {
 		super(id, kind);
 		turn = 0;
@@ -25,6 +28,8 @@ public class AiPlayer extends Player {
 		}
 		return ab.AlphaBetaSearch(new HeuristicTablut(), 7, newState);
 //		return pvs.pvSearch(newState, Integer.MAX_VALUE, Integer.MIN_VALUE, 3);
+		TablutMCTSState MCTSState = new TablutMCTSState(newState.getBoard());
+		return mtcs.findNextMove(MCTSState);
 	}
 
 }
