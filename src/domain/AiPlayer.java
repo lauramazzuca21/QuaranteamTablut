@@ -18,11 +18,7 @@ public class AiPlayer extends Player {
 
 	@Override
 	public Move getNextMove(State newState) {	
-<<<<<<< HEAD
 //		return ab.AlphaBetaSearch(new HeuristicTablut(), 7, newState);
-=======
-		return ab.AlphaBetaSearch(new HeuristicTablut(), 5, newState);
->>>>>>> 5e5aab05aca85664bf67895f306d5b1ee5cc8146
 //		return pvs.pvSearch(newState, Integer.MAX_VALUE, Integer.MIN_VALUE, 3);
 		TablutMCTSState MCTSState = new TablutMCTSState(newState.getBoard());
 		return mtcs.findNextMove(MCTSState);
