@@ -19,10 +19,11 @@ public class TablutGame extends Game {
 		
 		for (Player p : players )
 		{
+			long now = System.currentTimeMillis();
 			Move nextMove = p.getNextMove(state);
 			
 			state.applyMove(nextMove);
-			System.out.println("turno "+p.getKind());
+			System.out.println("turno "+p.getKind() + " time elapsed: " + (System.currentTimeMillis() - now));
 
 			System.out.println(state.toString());
 

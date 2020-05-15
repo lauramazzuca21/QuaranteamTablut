@@ -51,6 +51,7 @@ public class TablutState extends State {
 						//celle precedenti
 							//in orizzontale...
 						if (prevX >= 0 
+								&& !stopPrevHorizontal
 								&& board.getPawn(prevX, y) == Pawn.EMPTY 
 								&& board.getTile(prevX, y) != Tile.CAMP 
 								&& board.getTile(prevX, y) != Tile.CASTLE )
@@ -61,6 +62,7 @@ public class TablutState extends State {
 							//...e in verticale
 						
 						if (prevY >= 0
+								&& !stopPrevVertical
 								&&  board.getPawn(x, prevY) == Pawn.EMPTY 
 								&& board.getTile(x, prevY) != Tile.CAMP 
 								&& board.getTile(x, prevY) != Tile.CASTLE )
@@ -72,6 +74,7 @@ public class TablutState extends State {
 						//celle successive
 							//in orizzontale...
 						if (postX < dimX 
+								&& !stopPostHorizontal
 								&&  board.getPawn(postX, y) == Pawn.EMPTY 
 								&& board.getTile(postX, y) != Tile.CAMP 
 								&& board.getTile(postX, y) != Tile.CASTLE )
@@ -83,6 +86,7 @@ public class TablutState extends State {
 							//...e in verticale
 						
 						if (postY < dimY
+								&& !stopPostVertical
 								&&  board.getPawn(x, postY) == Pawn.EMPTY 
 								&& board.getTile(x, postY) != Tile.CAMP 
 								&& board.getTile(x, postY) != Tile.CASTLE )
@@ -97,23 +101,23 @@ public class TablutState extends State {
 		}//for x
 		
 		
-//		return result;
-		return removeRepeatingConfigurationMoves(result);
+		return result;
+//		return removeRepeatingConfigurationMoves(result);
 	}
 	
 	private List<Move> removeRepeatingConfigurationMoves(List<Move> moves) {
 		
 		List<Move> result = new ArrayList<Move>();
 		
-		for (Move m : moves) {
-			Board temp = this.getBoard().clone();
+		for (Move m : moves) {			
+			Position[] eaten = getBoard().applyMove(m);
 			
-			temp.applyMove(m);
-			
-			if (!checkRepeatingBoardConfiguration(temp))
+			if (!checkRepeatingBoardConfiguration(getBoard()))
 			{
 				result.add(m);
 			}
+			
+			getBoard().undoMove(m, eaten);
 		}
 		return result;
 	}
@@ -132,8 +136,8 @@ public class TablutState extends State {
 	}
 
 	@Override
-	public List<Position> applyMove(Move nextMove) {
-		List<Position> eaten = getBoard().applyMove(nextMove);
+	public Position[] applyMove(Move nextMove) {
+		Position[] eaten = getBoard().applyMove(nextMove);
 
 		updateGameState();
 		
@@ -200,10 +204,9 @@ public class TablutState extends State {
 	}
 
 	@Override
-	public void undoMove(Move nextMove, List<Position> eaten) {
+	public void undoMove(Move nextMove, Position[] eaten) {
 		
 		boardHistory.remove(this.getBoard().toString());
-
 		getBoard().undoMove(nextMove, eaten);
 		this.setGameState(GameState.PLAYING);
 		

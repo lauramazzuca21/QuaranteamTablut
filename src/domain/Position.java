@@ -1,8 +1,5 @@
 package domain;
 
-import java.util.LinkedList;
-import java.util.List;
-
 public class Position {
 
 	private int x;
@@ -66,31 +63,36 @@ public class Position {
 		return new Position(x, y-1);
 	}
 	
-	public List<Position> getOrthogonalNeighbors(int xBound, int yBound) {
-		List<Position> positions = new LinkedList<Position>();
+	public Position[] getOrthogonalNeighbors(int xBound, int yBound) {
+		Position[] positions = new Position[4];
 	
-		if (getNextPositionX(xBound) != null) positions.add(getNextPositionX(xBound));
-		if (getNextPositionY(yBound) != null) positions.add(getNextPositionY(yBound));
-		if (getPreviousPositionX() != null) positions.add(getPreviousPositionX());
-		if (getPreviousPositionY() != null) positions.add(getPreviousPositionY());
+		int idx = 0;
+		
+		if (getNextPositionX(xBound) != null) positions[idx] = getNextPositionX(xBound); idx++;
+		if (getNextPositionY(yBound) != null) positions[idx] = getNextPositionY(yBound); idx++;
+		if (getPreviousPositionX() != null) positions[idx] = getPreviousPositionX(); idx++;
+		if (getPreviousPositionY() != null) positions[idx] = getPreviousPositionY(); idx++;
 		
 		return positions;
 	}
 	
-	public List<Position> getHorizontalNeighbors(int xBound, int yBound) {
-		List<Position> positions = new LinkedList<Position>();
+	public Position[] getHorizontalNeighbors(int xBound, int yBound) {
+		Position[] positions = new Position[2];
 	
-		if (getNextPositionX(xBound) != null) positions.add(getNextPositionX(xBound));
-		if (getPreviousPositionX() != null) positions.add(getPreviousPositionX());
+		int idx = 0;
+
+		if (getNextPositionX(xBound) != null) positions[idx] = getNextPositionX(xBound); idx++;
+		if (getPreviousPositionX() != null) positions[idx] = getPreviousPositionX(); idx++;
 		
 		return positions;
 	}
 	
-	public List<Position> getVerticalNeighbors(int xBound, int yBound) {
-		List<Position> positions = new LinkedList<Position>();
-	
-		if (getNextPositionY(yBound) != null) positions.add(getNextPositionY(yBound));
-		if (getPreviousPositionY() != null) positions.add(getPreviousPositionY());
+	public Position[] getVerticalNeighbors(int xBound, int yBound) {
+		Position[] positions = new Position[2];
+		int idx = 0;
+		
+		if (getNextPositionY(yBound) != null)  positions[idx] = getNextPositionY(yBound);
+		if (getPreviousPositionY() != null)  positions[idx] = getPreviousPositionY();
 		
 		return positions;
 	}

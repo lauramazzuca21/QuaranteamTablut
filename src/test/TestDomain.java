@@ -88,7 +88,7 @@ class TestDomain {
 		
 		tablut.applyMove(new Move(3, 0, 3, 3));
 		
-		assertTrue(tablut.getEatenPawns(new Move(0, 5, 3, 5)).size() == 1);
+		assertTrue(tablut.getEatenPawns(new Move(0, 5, 3, 5)).length == 1);
 		
 	}
 	

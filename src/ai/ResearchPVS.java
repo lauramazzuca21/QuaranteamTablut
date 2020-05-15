@@ -16,7 +16,7 @@ public class ResearchPVS {
 		boolean bSearchPv = true;
 		for (Move m : state.getPossibleMoves())  { 
 			State newState = state;
-	        List<Position> eaten = newState.applyMove(m);
+			Position[] eaten = newState.applyMove(m);
 			
 			if ( bSearchPv ) {
 				score = -pvSearch(newState, -beta, -alpha, depth - 1);
@@ -46,7 +46,7 @@ public class ResearchPVS {
 
 	    for(Move m : state.getPossibleMoves()) {
 	        State childState = state;
-	        List<Position> eaten = childState.applyMove(m);
+	        Position[] eaten = childState.applyMove(m);
 	        int score = -quiesce(childState, -beta, -alpha );
 	        childState.undoMove(m, eaten);
 

@@ -38,9 +38,8 @@ class TestAi {
 //		System.out.println("=================END OF TEST 2=================");
 //	}
 
-	
 //	@Test
-//	void test_Alpha_Beta_Pruning_10_turns() {
+//	void test_Alpha_Beta_Pruning_time_white() {
 //		List<Player> players = new ArrayList<Player>();
 //		
 //		players.add(new AiPlayer("TheQuaranteam", PlayerKind.WHITE));
@@ -48,16 +47,24 @@ class TestAi {
 //		
 //		Game game = new TablutGame(players);
 //		
-//		for(int i = 0; i < 10; i++) {
-//			game.loop();
-//			
-//		}
-//		
-//		System.out.println("=================END OF TEST 3=================");
+//		game.loop();
 //	}
-
+//	
+//	@Test
+//	void test_Alpha_Beta_Pruning_time_black() {
+//		List<Player> players = new ArrayList<Player>();
+//		
+//		players.add(new AiPlayer("TheQuaranteam", PlayerKind.BLACK));
+//		players.add(new AiPlayer("Adversary", PlayerKind.WHITE));
+//
+//		Game game = new TablutGame(players);
+//		game.getState().setTurnOf(PlayerKind.BLACK);	
+//		
+//		game.loop();
+//	}
+	
 	@Test
-	void test_MCTS_Pruning_10_turns() {
+	void test_Alpha_Beta_Pruning_10_turns() {
 		List<Player> players = new ArrayList<Player>();
 		
 		players.add(new AiPlayer("TheQuaranteam", PlayerKind.WHITE));
@@ -67,10 +74,7 @@ class TestAi {
 		
 		for(int i = 0; i < 10; i++) {
 			game.loop();
-			
 		}
-		
-		System.out.println("=================END OF TEST 3=================");
 	}
-	
+
 }
