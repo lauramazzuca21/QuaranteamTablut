@@ -3,40 +3,56 @@ package aiMCTS;
 import java.util.List;
 
 import domain.Move;
+import domain.Pair;
+import domain.Position;
 import domain.TablutMCTSState;
 import enums.GameState;
 import enums.PlayerKind;
-import domain.State;
 
 public class MCTSearch {
    static final int WIN_SCORE = 10;
-   static final int END_TIMER = 60000; //60 secondi
+   static final int END_TIMER = 40000; //60 secondi
    int level;
    PlayerKind opponent;
  
     public Move findNextMove (TablutMCTSState state) {
     	long start= System.currentTimeMillis();
-        opponent = state.getOpponent();
-        
+        int count = 0;
         Tree tree = new Tree();
-        Node rootNode = tree.getRoot();
-        rootNode.getState().setBoard(state.getBoard());
-        rootNode.getState().setTurnOf(opponent);
- 
+        tree.getRoot().setState(state.toString());
+        tree.getRoot().setPlayer(state.getTurnOf());
+    	TablutMCTSState stateCopy = state.deepCopy();
+
+        expandNode(tree.getRoot(), stateCopy);
+        
+        
         while (System.currentTimeMillis() - start < END_TIMER) {
-            Node promisingNode = selectPromisingNode(rootNode);
-            if (promisingNode.getState().hasWon(state.getTurnOf()) == false) {
-                expandNode(promisingNode);
+            //selects the most promising child of the root node so that we have to analize less 
+        	Node promisingNode = selectPromisingNode(tree.getRoot());
+            //promising nodes are only nodes of 0-1 breadth level
+            Position[] eaten = stateCopy.applyMove(promisingNode.getUsedMove());
+        	
+            //if it's not a winning state, we expand the children of the promising node
+        	if (stateCopy.hasWon(stateCopy.getTurnOf()) == false) {
+                expandNode(promisingNode, stateCopy);
             }
+        	
             Node nodeToExplore = promisingNode;
+            //if the promising node has been expanded, get a random child
             if (promisingNode.getChildArray().size() > 0) {
                 nodeToExplore = promisingNode.getRandomChildNode();
             }
-            PlayerKind winner = simulateRandomPlayout(nodeToExplore);
+            
+            PlayerKind winner = simulateRandomPlayout(nodeToExplore, stateCopy);
             backPropogation(nodeToExplore, winner);
+            stateCopy.undoMove(promisingNode.getUsedMove(), eaten);
+            count++;
         }
  
-        Node winnerNode = rootNode.getChildWithMaxScore();
+
+        Node winnerNode = tree.getRoot().getChildWithMaxScore();
+        System.out.println("Loops: " + count + " Visited: " + winnerNode.getVisitNumber() + " WinScore: " + winnerNode.getWinScore());
+
         tree.setRoot(winnerNode);
         return winnerNode.getUsedMove();
     }
@@ -50,51 +66,43 @@ public class MCTSearch {
         return node;
     }
     
-    private void expandNode(Node node) {
-        List<Move> possibleMoves = node.getState().getAllPossibleStates();
-        possibleMoves.forEach(nextMove -> {
-            Node newNode = new Node(node.getState());
-        	newNode.getState().applyMove(nextMove);
+    private void expandNode(Node node, TablutMCTSState state) {
+        List<Move> possibleMoves = state.getPossibleMoves();
+        
+        for (Move nextMove : possibleMoves)
+        {
+        	Position[] eaten = state.applyMove(nextMove);
+        	Node newNode = new Node(state.getCurrentBoardString(), state.getTurnOf());
+        	state.undoMove(nextMove, eaten);
             newNode.setParent(node);
-            newNode.getState().setTurnOf(node.getState().getOpponent());
             newNode.saveMoveUsed(nextMove);
             node.getChildArray().add(newNode);
-        });
+        }
     }
 
    
-    private PlayerKind simulateRandomPlayout(Node node) {
-        Node tempNode = new Node(node);
-        TablutMCTSState tempState = tempNode.getState();
-        GameState boardStatus = tempState.getGameState();
-//    if(boardStatus != GameState.PLAYING) {
-//        if (boardStatus == GameState.LOSE) {
-//            tempNode.getParent().getState().setWinScore(Integer.MIN_VALUE);
-//            return tempNode.getState().getOpponent();
-//        }
-//        else if (boardStatus == GameState.WIN){
-//            tempNode.getParent().getState().setWinScore(Integer.MIN_VALUE);
-//            return tempNode.getState().getTurnOf();
-//        }
-//        else if (boardStatus == GameState.DRAW){
-//        	return null;
-//        }
-//    }
-        while (boardStatus == GameState.PLAYING) {
-            tempState.setTurnOf(tempState.getOpponent());
-            tempState.randomPlay();
-            boardStatus = tempState.getGameState();
-        }
+    private PlayerKind simulateRandomPlayout(Node nodeToExplore, TablutMCTSState state) {
+    	
+    	TablutMCTSState stateCopy = state.deepCopy();
+    	
+    	Pair<GameState, PlayerKind> boardStatus  = stateCopy.randomPlay();
+    			
+		while (boardStatus.getKey() == GameState.PLAYING)
+		{
+			boardStatus = stateCopy.randomPlay();
+		}
         
-        if (boardStatus == GameState.LOSE) {
-            tempNode.getParent().getState().setWinScore(Integer.MIN_VALUE);
-            return tempNode.getState().getOpponent();
+        if (boardStatus.getKey() == GameState.LOSE) {
+//        	nodeToExplore.getParent().setWinScore(Integer.MIN_VALUE);
+            return boardStatus.getValue() == PlayerKind.WHITE ? PlayerKind.BLACK : PlayerKind.WHITE;
         }
-        else if (boardStatus == GameState.WIN){
-            tempNode.getParent().getState().setWinScore(Integer.MIN_VALUE);
-            return tempNode.getState().getTurnOf();
+        else if (boardStatus.getKey()  == GameState.WIN){
+//        	nodeToExplore.getParent().setWinScore(Integer.MAX_VALUE);
+            return boardStatus.getValue();
         }
-        else{
+        else {
+        	//TODO: cercare un buon valore per DRAW config
+//        	nodeToExplore.getParent().setWinScore(Integer.MAX_VALUE/100);
         	return null;
         }    
     }
@@ -102,9 +110,9 @@ public class MCTSearch {
     private void backPropogation(Node nodeToExplore, PlayerKind playerNo) {
         Node tempNode = nodeToExplore;
         while (tempNode != null) {
-            tempNode.getState().incrementVisit();
-            if (tempNode.getState().getTurnOf() == playerNo) {
-                tempNode.getState().addScore(WIN_SCORE);
+            tempNode.incrementVisit();
+            if (tempNode.getPlayer() == playerNo) {
+                tempNode.incrementWinScore(WIN_SCORE);
             }
             tempNode = tempNode.getParent();
         }

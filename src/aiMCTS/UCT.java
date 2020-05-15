@@ -15,10 +15,10 @@ public class UCT {
  
    
 	public static Node findBestNodeWithUCT(Node node) {
-        int parentVisit = node.getState().getVisitCount();
+        int parentVisit = node.getVisitNumber();
         return Collections.max(
           node.getChildArray(),
-          Comparator.comparing(c -> uctValue(parentVisit, c.getState().getWinScore(), c.getState().getVisitCount())));
+          Comparator.comparing(c -> uctValue(parentVisit, c.getWinScore(), c.getVisitNumber())));
     }
 
 }

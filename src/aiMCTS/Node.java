@@ -1,36 +1,50 @@
 package aiMCTS;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import domain.Move;
-import domain.TablutMCTSState;
+import enums.PlayerKind;
 
 public class Node {
-	private TablutMCTSState state;
+	private String state;
 	private Node parent;
     private List<Node> childArray;
     private Move usedMove;
     
+    
+    private int winScore;
+    private int visitNumber;
+	private PlayerKind player;
+    
     public Node() {
-    	
+    	winScore = 0;
+    	visitNumber = 0;
+    	childArray = new ArrayList<Node>();
     }
     
-    public Node(TablutMCTSState state) {
+    public Node(String state, PlayerKind kind) {
     	this.state = state;
+    	winScore = 0;
+    	visitNumber = 0;
+    	childArray = new ArrayList<Node>();
+    	player = kind;
     }
     
     public Node(Node node) {
     	this.state = node.getState();
     	this.parent = node.getParent();
     	this.childArray = node.getChildArray();
+    	winScore = 0;
+    	visitNumber = 0;
     }
 
 	// setters and getters
-	public TablutMCTSState getState() {
+	public String getState() {
 		return state;
 	}
-	public void setState(TablutMCTSState state) {
+	public void setState(String state) {
 		this.state = state;
 	}
 	public Node getParent() {
@@ -55,8 +69,8 @@ public class Node {
 		double max = 0;
 		Node maxNode = new Node();
 		for(Node n : getChildArray()) {
-			if (n.getState().getWinScore() >= max) {
-				max = n.getState().getWinScore();
+			if (n.getWinScore() >= max) {
+				max = n.getWinScore();
 				maxNode = n;
 			}
 		}
@@ -74,4 +88,34 @@ public class Node {
 	public void setUsedMove(Move usedMove) {
 		this.usedMove = usedMove;
 	}
+
+	public void setWinScore(int value) {
+		this.winScore = value;
+	}
+	
+	public void incrementWinScore(int value) {
+		this.winScore += value;
+	}
+	
+	public void incrementVisit() {
+		this.visitNumber++;
+	}
+
+	public int getWinScore() {
+		return winScore;
+	}
+
+	public int getVisitNumber() {
+		return visitNumber;
+	}
+	
+    public PlayerKind getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(PlayerKind turnOf) {
+
+		this.player = turnOf;		
+	}
+	
 }

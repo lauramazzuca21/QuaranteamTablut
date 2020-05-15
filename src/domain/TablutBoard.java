@@ -1,8 +1,5 @@
 package domain;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import enums.Loader;
 import enums.Pawn;
 import enums.Tile;

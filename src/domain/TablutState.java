@@ -21,6 +21,10 @@ public class TablutState extends State {
 		this.setGameState(GameState.PLAYING);
 	}
 	
+	public String getCurrentBoardString() {
+		return currentBoard;
+	}
+	
 	@Override
 	public List<Move> getPossibleMoves(PlayerKind playerKind) {
 		List<Move> result = new ArrayList<Move>();

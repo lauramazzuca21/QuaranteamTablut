@@ -92,6 +92,10 @@ public abstract class Board implements Cloneable {
 			return Tile.EMPTY;
 		return tileBoard[position.getX()][position.getY()];
 	}
+	
+	public Board deepCopy() {
+		return this.clone();
+	}
 
 	@Override
 	protected Board clone() {	

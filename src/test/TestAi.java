@@ -63,8 +63,22 @@ class TestAi {
 //		game.loop();
 //	}
 	
+//	@Test
+//	void test_Alpha_Beta_Pruning_10_turns() {
+//		List<Player> players = new ArrayList<Player>();
+//		
+//		players.add(new AiPlayer("TheQuaranteam", PlayerKind.WHITE));
+//		players.add(new AiPlayer("Adversary", PlayerKind.BLACK));
+//		
+//		Game game = new TablutGame(players);
+//		
+//		for(int i = 0; i < 10; i++) {
+//			game.loop();
+//		}
+//	}
+	
 	@Test
-	void test_Alpha_Beta_Pruning_10_turns() {
+	void test_MCS_10_turns() {
 		List<Player> players = new ArrayList<Player>();
 		
 		players.add(new AiPlayer("TheQuaranteam", PlayerKind.WHITE));
