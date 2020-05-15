@@ -1,7 +1,5 @@
 package ai;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,10 +35,12 @@ public class ResearchAlphaBeta {
 		
 		if(ts.getTurnOf().equals(PlayerKind.WHITE)) {	//MAX player
 			int v = MaxValue(maxDepth, Integer.MIN_VALUE, Integer.MAX_VALUE, ts);
+			System.gc();
 			return mapMoves.get(v);	//si recupera l'azione con il valore v più alto
 		}
 		else if(ts.getTurnOf().equals(PlayerKind.BLACK)) {	//MIN player
 			int v = MinValue(maxDepth, Integer.MIN_VALUE, Integer.MAX_VALUE, ts);
+			System.gc();
 			return mapMoves.get(v);	//si recupera l'azione con il valore v più basso
 		}			
 			return null;
@@ -76,17 +76,15 @@ public class ResearchAlphaBeta {
 		List<Move> moves = state.getPossibleMoves(PlayerKind.WHITE);
 
 		//System.out.println("[MAX] Possible Moves: " + moves.size() );
-				
-		for (Move m : moves) {											//= per ogni coppia <azione, stato>
-			//create childstate
+		for (Move m : moves) {
+		
 			Position[] eaten = state.applyMove(m);
 			
-
 			tmp=MinValue(depth - 1, alpha, beta, state);
-			
+		
 			state.undoMove(m, eaten);
 			
-				//tmp strettamente maggiore di v altirmenti inserisce nella mappa anche i valori infiniti
+			//tmp strettamente maggiore di v altirmenti inserisce nella mappa anche i valori infiniti
 			if(this.maxDepth == depth && tmp > v) {
 				this.mapMoves.put(tmp, m);					
 				//ci si salva in mappa le coppie <valore, mossa> del primo livello di profondità
@@ -135,9 +133,7 @@ public class ResearchAlphaBeta {
 		List<Move> moves = state.getPossibleMoves(PlayerKind.BLACK);
 		
 		//System.out.println("[MIN] Possible Moves: " + moves.size() );
-		
-		long now = System.currentTimeMillis();
-		
+				
 		for (Move m : moves) {											
 			//create childstate
 //			State childState = state.deepCopy();
@@ -176,7 +172,8 @@ public class ResearchAlphaBeta {
 	private boolean cutoff(int depth, State state) {
 		//ci si blocca quando si raggiunge una certa profondità o si è in un nodo
 		//foglia -> quindi si è determinato una vittoria o sconfitta o pareggio
-			return depth <= 0 || (state.getGameState() != GameState.PLAYING);
+			return depth <= 0 
+					|| (state.getGameState() != GameState.PLAYING);
 		}
 	
 }

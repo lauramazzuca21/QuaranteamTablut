@@ -27,26 +27,33 @@ public class TablutGame extends Game {
 
 			System.out.println(state.toString());
 
-			checkGameState();
+			if (checkGameState())
+			{
+				return;
+			}
 		}
 	}
 	
-	private void checkGameState() {
+	private boolean checkGameState() {
 		
 		if (state.getGameState() == GameState.WIN)
 		{
 			System.out.println("You win");
+			return true;
 		}
 		
 		else if(state.getGameState() == GameState.LOSE)
 		{
 			System.out.println("You lost");
+			return true;
 		}
 		
 		else if(state.getGameState() == GameState.DRAW)
 		{
 			System.out.println("Draw");
+			return true;
 		}
+		return false;
 	}
 
 }

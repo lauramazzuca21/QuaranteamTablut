@@ -5,6 +5,7 @@ import domain.Position;
 import domain.State;
 import domain.TablutBoard;
 import domain.TablutState;
+import enums.GameState;
 import enums.Pawn;
 import enums.PlayerKind;
 import enums.Tile;
@@ -35,9 +36,22 @@ public class HeuristicTablut implements HeuristicFunction{
 	public int getStateValue(State state) {		
 		TablutBoard tb = (TablutBoard) state.getBoard();
 		
-		if (state.hasWon(PlayerKind.WHITE)) return 10000;
+		if (state.hasWon(PlayerKind.WHITE)) 
+		{
+			return 10000;
+		}
 
-		if (state.hasWon(PlayerKind.BLACK)) return -10000;
+		if (state.hasWon(PlayerKind.BLACK)) 
+		{
+			return -10000;
+		}
+		
+		if (state.getGameState() == GameState.DRAW && state.getTurnOf() == PlayerKind.WHITE)
+			return 9000;
+			
+		if (state.getGameState() == GameState.DRAW && state.getTurnOf() == PlayerKind.BLACK)
+			return -9000;
+			
 
 		int result = 0;
 		
@@ -65,16 +79,7 @@ public class HeuristicTablut implements HeuristicFunction{
 		*/
 		
 		return result;
-	}
-
-	
-//	private boolean PawnInDanger(State state) {
-//		TablutBoard tb = (TablutBoard) state.getBoard();
-//
-//		for
-//	}
-	
-	
+	}	
 	
 	private static boolean isKingInDanger(State state) {
 

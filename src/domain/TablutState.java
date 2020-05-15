@@ -2,6 +2,7 @@ package domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import enums.GameState;
 import enums.Pawn;
@@ -10,12 +11,13 @@ import enums.Tile;
 
 public class TablutState extends State {
 
-	private ArrayList<String> boardHistory;
+	private Stack<String> boardHistory;
+	String currentBoard;
 	
 	public TablutState(Board board) {
 		super(board, PlayerKind.WHITE);
-		boardHistory = new ArrayList<String>();
-		boardHistory.add(board.toString());
+		currentBoard = board.toString();
+		boardHistory = new Stack<String>();
 		this.setGameState(GameState.PLAYING);
 	}
 	
@@ -105,28 +107,28 @@ public class TablutState extends State {
 //		return removeRepeatingConfigurationMoves(result);
 	}
 	
-	private List<Move> removeRepeatingConfigurationMoves(List<Move> moves) {
-		
-		List<Move> result = new ArrayList<Move>();
-		
-		for (Move m : moves) {			
-			Position[] eaten = getBoard().applyMove(m);
-			
-			if (!checkRepeatingBoardConfiguration(getBoard()))
-			{
-				result.add(m);
-			}
-			
-			getBoard().undoMove(m, eaten);
-		}
-		return result;
-	}
+//	private List<Move> removeRepeatingConfigurationMoves(List<Move> moves) {
+//		
+//		List<Move> result = new ArrayList<Move>();
+//		
+//		for (Move m : moves) {			
+//			Position[] eaten = getBoard().applyMove(m);
+//			
+//			if (!checkRepeatingBoardConfiguration(getBoard().toString()))
+//			{
+//				result.add(m);
+//			}
+//			
+//			getBoard().undoMove(m, eaten);
+//		}
+//		return result;
+//	}
 	
-	public boolean checkRepeatingBoardConfiguration(Board current) {
-		
-		for (String b : boardHistory)
+	public boolean checkRepeatingBoardConfiguration(String current) {
+		boardHistory.trimToSize();
+		for (int i = 0; i< boardHistory.size(); i++)
 		{
-			if (b.equals(current.toString()))
+			if (boardHistory.get(i).equals(current))
 			{
 				return true;
 			}
@@ -137,11 +139,13 @@ public class TablutState extends State {
 
 	@Override
 	public Position[] applyMove(Move nextMove) {
+	
 		Position[] eaten = getBoard().applyMove(nextMove);
+		boardHistory.push(currentBoard);
+		currentBoard = this.getBoard().toString();
 
 		updateGameState();
-		
-		boardHistory.add(this.getBoard().toString());
+				
 		this.setTurnOf(getTurnOf() == PlayerKind.WHITE ? PlayerKind.BLACK : PlayerKind.WHITE);
 		
 		return eaten;
@@ -164,11 +168,11 @@ public class TablutState extends State {
 		{
 			this.setGameState(GameState.LOSE);
 		}
-		else if (checkRepeatingBoardConfiguration(tb))
+		else if (checkRepeatingBoardConfiguration(currentBoard))
 		{
 			this.setGameState(GameState.DRAW);
 		}
-		
+			
 	}
 
 	@Override
@@ -180,15 +184,15 @@ public class TablutState extends State {
 	public boolean hasWon(PlayerKind playerKind) {
 		switch(playerKind) {
 		case WHITE:
-			if ( (this.getGameState() == GameState.WIN && this.getTurnOf() == PlayerKind.WHITE)
-					|| (this.getGameState() == GameState.LOSE && this.getTurnOf() == PlayerKind.BLACK) )
+			if ( (this.getGameState() == GameState.WIN && this.getTurnOf() == PlayerKind.BLACK)
+					|| (this.getGameState() == GameState.LOSE && this.getTurnOf() == PlayerKind.WHITE) )
 			{
 				return true;
 			}
 			return false;
 		case BLACK:
-			if ( (this.getGameState() == GameState.WIN && this.getTurnOf() == PlayerKind.BLACK)
-					|| (this.getGameState() == GameState.LOSE && this.getTurnOf() == PlayerKind.WHITE) )
+			if ( (this.getGameState() == GameState.WIN && this.getTurnOf() == PlayerKind.WHITE)
+					|| (this.getGameState() == GameState.LOSE && this.getTurnOf() == PlayerKind.BLACK) )
 			{
 				return true;
 			}
@@ -200,14 +204,17 @@ public class TablutState extends State {
 	}
 	
 	public String toString() {
-		return getBoard().toString();
+		return currentBoard;
 	}
 
 	@Override
 	public void undoMove(Move nextMove, Position[] eaten) {
 		
-		boardHistory.remove(this.getBoard().toString());
+		boardHistory.pop();
 		getBoard().undoMove(nextMove, eaten);
+		
+		currentBoard = this.getBoard().toString();
+		
 		this.setGameState(GameState.PLAYING);
 		
 		this.setTurnOf(getTurnOf() == PlayerKind.WHITE ? PlayerKind.BLACK : PlayerKind.WHITE);

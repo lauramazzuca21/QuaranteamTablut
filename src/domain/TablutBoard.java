@@ -115,35 +115,13 @@ public class TablutBoard extends Board {
 	}
 	
 	private boolean surroundedAdiacentToCitadel(Position position) {
-//		Pawn type = getPawn(position);
-		Pawn precPawn = Pawn.EMPTY;
-		Tile precTile = Tile.EMPTY;
+		Position[] neighborsH = position.getHorizontalNeighbors(DIM, DIM);
+		Position[] neighborsV = position.getVerticalNeighbors(DIM, DIM);
 		
-//		Position[] neighbors = position.getHorizontalNeighbors(DIM, DIM);
-				
-		for (Position p : position.getHorizontalNeighbors(DIM, DIM))
-		{
-			if ( (precPawn == Pawn.BLACK && getTile(p) == Tile.CAMP)
-				|| (precTile == Tile.CAMP && getPawn(p) == Pawn.BLACK) ) {
-				return true;
-			}
-			
-			precPawn = getPawn(p);
-			precTile = getTile(p);
-		}
-		
-		for (Position p : position.getVerticalNeighbors(DIM, DIM))
-		{
-			if ( (precPawn == Pawn.BLACK && getTile(p) == Tile.CAMP)
-				|| (precTile == Tile.CAMP && getPawn(p) == Pawn.BLACK) ) {
-				return true;
-			}
-			
-			precPawn = getPawn(p);
-			precTile = getTile(p);
-		}
-		
-		return false;
+		return (getPawn(neighborsH[0]) == Pawn.BLACK && getTile(neighborsH[1]) == Tile.CAMP)
+				|| (getPawn(neighborsH[1]) == Pawn.BLACK && getTile(neighborsH[0]) == Tile.CAMP)
+				|| (getPawn(neighborsV[0]) == Pawn.BLACK && getTile(neighborsV[1]) == Tile.CAMP)
+				|| (getPawn(neighborsV[1]) == Pawn.BLACK && getTile(neighborsV[0]) == Tile.CAMP);
 	}
 	
 	private boolean surroundedOnX(Position position) {
