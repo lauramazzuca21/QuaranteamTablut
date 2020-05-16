@@ -31,6 +31,17 @@ public class HeuristicTablut implements HeuristicFunction{
 	private static final int WEIGTH6 = 1;
 	private static final int WEIGTH7 = 15;
 	private static final int WEIGTH8 = 5;
+	private static final int[][] position_weight = {
+	        {   0, 1000, 1000,   0,    0,   0, 1000, 1000,    0},
+	        {1000,  300,  200, 100,    0, 100,  200,  300, 1000},
+	        {1000,  200,  200, 200,  200, 200,  200,  200, 1000},
+	        {   0,  100,  200,   0,    0,   0,  200,  100,    0},
+	        {   0,    0,  200,   0,-1000,   0,  200,    0,    0},
+	        {   0,  100,  200,   0,    0,   0,  200,  100,    0},
+	        {1000,  300,  200, 200,  200, 200,  200,  300, 1000},
+	        {1000,  100,  200, 100,    0, 100,  200,  100, 1000},
+	        {   0, 1000, 1000,   0,    0,   0, 1000, 1000,    0},
+	};
 
 	
 	public int getStateValue(State state) {		
@@ -78,7 +89,9 @@ public class HeuristicTablut implements HeuristicFunction{
 		return 0;
 		*/
 		
-		return result;
+		if (state.getTurnOf() == PlayerKind.WHITE)
+			return result;
+		else return -result;
 	}	
 	
 	private static boolean isKingInDanger(State state) {

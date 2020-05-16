@@ -61,7 +61,6 @@ public class ResearchAlphaBeta implements ResearchAlgorithm{
 	 * @return
 	 */
 	
-	//@Matteo manca il confronto sul percorso minimo , forse la mappa non basta , per ora provo a usare depth in cutoff
 	private int MaxValue(int depth, int alpha, int beta, State state) {
 		//all'interuzione si ritorna un valore 
 		if (cutoff(depth, state)) {
