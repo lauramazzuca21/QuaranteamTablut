@@ -12,9 +12,9 @@ import enums.GameState;
 import enums.PlayerKind;
 
 public class MCTSearch  implements ResearchAlgorithm {
-   static final int WIN_SCORE = 10;
-   static final int DRAW_SCORE = 5;
-   static final int END_TIMER = 40000; //60 secondi
+   static final int WIN_SCORE = 100;
+   static final int DRAW_SCORE = 10;
+   static final int END_TIMER = 55000; //60 secondi
    int level;
    PlayerKind opponent;
  
@@ -78,7 +78,7 @@ public class MCTSearch  implements ResearchAlgorithm {
         {
         	PlayerKind currentPlayer = state.getTurnOf();
         	Position[] eaten = state.applyMove(nextMove);
-        	Node newNode = new Node(state.getCurrentBoardString(), currentPlayer);
+        	Node newNode = new Node(state.toString(), currentPlayer);
         	state.undoMove(nextMove, eaten);
             newNode.setParent(node);
             newNode.saveMoveUsed(nextMove);
@@ -99,16 +99,12 @@ public class MCTSearch  implements ResearchAlgorithm {
 		}
         
         if (boardStatus.getKey() == GameState.LOSE) {
-//        	nodeToExplore.getParent().setWinScore(Integer.MIN_VALUE);
             return boardStatus.getValue() == PlayerKind.WHITE ? PlayerKind.BLACK : PlayerKind.WHITE;
         }
         else if (boardStatus.getKey()  == GameState.WIN){
-//        	nodeToExplore.getParent().setWinScore(Integer.MAX_VALUE);
             return boardStatus.getValue();
         }
         else {
-        	//TODO: cercare un buon valore per DRAW config
-//        	nodeToExplore.getParent().setWinScore(Integer.MAX_VALUE/100);
         	return null;
         }    
     }

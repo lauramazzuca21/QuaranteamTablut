@@ -39,12 +39,10 @@ public class ResearchAlphaBeta implements ResearchAlgorithm{
 		TranspositionTable.getInstance().clear();
 		if(newState.getTurnOf().equals(PlayerKind.WHITE)) {	//MAX player
 			int v = MaxValue(maxDepth, Integer.MIN_VALUE, Integer.MAX_VALUE, newState);
-			System.gc();
 			return mapMoves.get(v);	//si recupera l'azione con il valore v più alto
 		}
 		else if(newState.getTurnOf().equals(PlayerKind.BLACK)) {	//MIN player
 			int v = MinValue(maxDepth, Integer.MIN_VALUE, Integer.MAX_VALUE, newState);
-			System.gc();
 			return mapMoves.get(v);	//si recupera l'azione con il valore v più basso
 		}			
 			return null;
@@ -79,20 +77,14 @@ public class ResearchAlphaBeta implements ResearchAlgorithm{
 		//System.out.println("[MAX] Beta: " + beta );
 		
 		List<Move> moves = state.getPossibleMoves(PlayerKind.WHITE);
-		String board = null;
 		//System.out.println("[MAX] Possible Moves: " + moves.size() );
 		for (Move m : moves) {
 			Integer tmp = null;
 			Position[] eaten = state.applyMove(m);
-			board = state.toString();
-//			if (TranspositionTable.getInstance().contains(board))
-//			{
-//				tmp = TranspositionTable.getInstance().getValue(board, depth);
-//			}
-//			
-//			if(tmp == null) {
+			
+			if ((tmp = TranspositionTable.getInstance().getValue(state.toString(), depth)) == null) {
 				tmp = MinValue(depth - 1, alpha, beta, state);
-//			} 
+			}
 			
 			state.undoMove(m, eaten);
 			
@@ -107,7 +99,7 @@ public class ResearchAlphaBeta implements ResearchAlgorithm{
 			if (v >= beta) {
 				//System.out.println("[MAX] Return Value: " + v );
 				//System.out.println("[MAX] Time elapsed: " + (System.currentTimeMillis() - now) );
-//				TranspositionTable.getInstance().add(board, depth, v);
+				TranspositionTable.getInstance().add(state.toString(), depth, v);
 				return v;
 			}
 
@@ -116,7 +108,7 @@ public class ResearchAlphaBeta implements ResearchAlgorithm{
 		
 		//System.out.println("[MAX] Return Value: " + v );
 		//System.out.println("[MAX] Time elapsed: " + (System.currentTimeMillis() - now) );
-//		TranspositionTable.getInstance().add(board, depth, v);
+		TranspositionTable.getInstance().add(state.toString(), depth, v);
 
 		return v;
 	
@@ -147,20 +139,12 @@ public class ResearchAlphaBeta implements ResearchAlgorithm{
 		List<Move> moves = state.getPossibleMoves(PlayerKind.BLACK);
 		
 		//System.out.println("[MIN] Possible Moves: " + moves.size() );
-		String board = null;
 		for (Move m : moves) {											
 			Integer tmp = null;
 			Position[] eaten = state.applyMove(m);
-			board = state.toString();
-//			if (TranspositionTable.getInstance().contains(board))
-//			{
-//				tmp = TranspositionTable.getInstance().getValue(board, depth);
-//			}
-//			
-//			if(tmp == null) {
-			
+			if ((tmp = TranspositionTable.getInstance().getValue(state.toString(), depth)) == null) {		
 				tmp=MaxValue(depth - 1, alpha, beta, state);
-//			} 
+			} 
 			
 			state.undoMove(m, eaten);
 			
@@ -173,14 +157,14 @@ public class ResearchAlphaBeta implements ResearchAlgorithm{
 			if (v <= alpha) {
 				//System.out.println("[MIN] Return Value: " + v );
 				//System.out.println("[MIN] Time elapsed: " + (System.currentTimeMillis() - now) );
-//				TranspositionTable.getInstance().add(board, depth, v);
+				TranspositionTable.getInstance().add(state.toString(), depth, v);
 				return v;
 			}
 			beta = Math.min(beta, v);
 		}
 		//System.out.println("[MIN] Return Value: " + v );
 		//System.out.println("[MIN] Time elapsed: " + (System.currentTimeMillis() - now) );
-//		TranspositionTable.getInstance().add(board, depth, v);
+		TranspositionTable.getInstance().add(state.toString(), depth, v);
 		return v;
 
 	}

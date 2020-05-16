@@ -6,26 +6,30 @@ import ai.ResearchAlgorithm;
 public class AiPlayer extends Player {
 
 	private int turn;
+	private ResearchAlgorithm researchInitial;
 	private ResearchAlgorithm research;
 	
 	public ResearchAlgorithm getResearch() {
 		return research;
 	}
 	
-	public AiPlayer(String id, PlayerKind kind, ResearchAlgorithm research) {
+	public AiPlayer(String id, PlayerKind kind, ResearchAlgorithm researchInitial, ResearchAlgorithm research) {
 		super(id, kind);
 		turn = 0;
 		this.research = research;
+		this.researchInitial = researchInitial;
 	}
 
 	@Override
 	public Move getNextMove(State newState) {
-//		if (this.getKind() == PlayerKind.WHITE && turn == 0)
-//		{	
+		System.gc();
+
+		if (turn < 4)
+		{	
 			turn++;
-//			return new Move(2, 4, 2, 2); 
-//		}
-		return this.getResearch().getNextMove(newState);
+			return this.researchInitial.getNextMove(newState);
+		}
+		return this.research.getNextMove(newState);
 	}
 
 }

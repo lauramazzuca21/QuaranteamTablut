@@ -100,15 +100,26 @@ class TestAi {
 	void test_AB_vs_MCS_10_turns() {
 		List<Player> players = new ArrayList<Player>();
 		
-		players.add(new AiPlayer("TheQuaranteam", PlayerKind.WHITE, new ResearchAlphaBeta(6, new HeuristicTablut())));
-		players.add(new AiPlayer("Adversary", PlayerKind.BLACK, new ResearchAlphaBeta(6, new HeuristicTablut())));
+		players.add(new AiPlayer("TheQuaranteam", PlayerKind.WHITE, new MCTSearch(), new ResearchAlphaBeta(7, new HeuristicTablut())));
+		players.add(new AiPlayer("Adversary", PlayerKind.BLACK, new MCTSearch(), new ResearchAlphaBeta(7, new HeuristicTablut())));
 		
-		Game game = new TablutGame(players);
-		
-		while (game.getState().getGameState() == GameState.PLAYING)	
-		{
-			game.loop();
+		int ww = 0, bw = 0, d = 0;
+		for (int i = 0; i < 10; i++) {
+			Game game = new TablutGame(players);
+	
+			while (game.getState().getGameState() == GameState.PLAYING)	
+			{
+				game.loop();
+			}
+			
+			if (game.getState().hasWon(PlayerKind.WHITE)) ww++;
+			else if (game.getState().hasWon(PlayerKind.BLACK)) bw++;
+			else d++;
 		}
+		
+		System.out.println("WHITE won: " + ww);
+		System.out.println("BLACK won: " + bw);
+		System.out.println("DRAW: " + d);
 	}
 
 }
