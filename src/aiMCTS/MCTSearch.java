@@ -2,26 +2,31 @@ package aiMCTS;
 
 import java.util.List;
 
+import ai.ResearchAlgorithm;
 import domain.Move;
 import domain.Pair;
 import domain.Position;
+import domain.State;
 import domain.TablutMCTSState;
 import enums.GameState;
 import enums.PlayerKind;
 
-public class MCTSearch {
+public class MCTSearch  implements ResearchAlgorithm {
    static final int WIN_SCORE = 10;
+   static final int DRAW_SCORE = 5;
    static final int END_TIMER = 40000; //60 secondi
    int level;
    PlayerKind opponent;
  
-    public Move findNextMove (TablutMCTSState state) {
+	@Override
+	public Move getNextMove(State newState) {
     	long start= System.currentTimeMillis();
         int count = 0;
         Tree tree = new Tree();
-        tree.getRoot().setState(state.toString());
-        tree.getRoot().setPlayer(state.getTurnOf());
-    	TablutMCTSState stateCopy = state.deepCopy();
+		TablutMCTSState MCTSState = new TablutMCTSState(newState);
+        tree.getRoot().setState(MCTSState.toString());
+        tree.getRoot().setPlayer(MCTSState.getTurnOf());
+    	TablutMCTSState stateCopy = MCTSState.deepCopy();
 
         expandNode(tree.getRoot(), stateCopy);
         
@@ -71,8 +76,9 @@ public class MCTSearch {
         
         for (Move nextMove : possibleMoves)
         {
+        	PlayerKind currentPlayer = state.getTurnOf();
         	Position[] eaten = state.applyMove(nextMove);
-        	Node newNode = new Node(state.getCurrentBoardString(), state.getTurnOf());
+        	Node newNode = new Node(state.getCurrentBoardString(), currentPlayer);
         	state.undoMove(nextMove, eaten);
             newNode.setParent(node);
             newNode.saveMoveUsed(nextMove);
@@ -113,6 +119,9 @@ public class MCTSearch {
             tempNode.incrementVisit();
             if (tempNode.getPlayer() == playerNo) {
                 tempNode.incrementWinScore(WIN_SCORE);
+            }
+            else if(playerNo == null) {
+            	tempNode.incrementWinScore(DRAW_SCORE);
             }
             tempNode = tempNode.getParent();
         }

@@ -5,7 +5,11 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import ai.HeuristicTablut;
+import ai.ResearchAlphaBeta;
+import aiMCTS.MCTSearch;
 import domain.*;
+import enums.GameState;
 import enums.PlayerKind;
 
 class TestAi {
@@ -77,16 +81,32 @@ class TestAi {
 //		}
 //	}
 	
+//	@Test
+//	void test_MCS_vs_AB() {
+//		List<Player> players = new ArrayList<Player>();
+//		
+//		players.add(new AiPlayer("TheQuaranteam", PlayerKind.WHITE, new MCTSearch()));
+//		players.add(new AiPlayer("Adversary", PlayerKind.BLACK, new ResearchAlphaBeta(20, new HeuristicTablut())));
+//		
+//		Game game = new TablutGame(players);
+//		
+//		while (game.getState().getGameState() == GameState.PLAYING)	
+//		{
+//			game.loop();
+//		}
+//	}
+//	
 	@Test
-	void test_MCS_10_turns() {
+	void test_AB_vs_MCS_10_turns() {
 		List<Player> players = new ArrayList<Player>();
 		
-		players.add(new AiPlayer("TheQuaranteam", PlayerKind.WHITE));
-		players.add(new AiPlayer("Adversary", PlayerKind.BLACK));
+		players.add(new AiPlayer("TheQuaranteam", PlayerKind.WHITE, new ResearchAlphaBeta(6, new HeuristicTablut())));
+		players.add(new AiPlayer("Adversary", PlayerKind.BLACK, new ResearchAlphaBeta(6, new HeuristicTablut())));
 		
 		Game game = new TablutGame(players);
 		
-		for(int i = 0; i < 10; i++) {
+		while (game.getState().getGameState() == GameState.PLAYING)	
+		{
 			game.loop();
 		}
 	}

@@ -1,35 +1,31 @@
 package domain;
 
 import enums.PlayerKind;
-import ai.ResearchAlphaBeta;
-import ai.ResearchPVS;
-import aiMCTS.MCTSearch;
+import ai.ResearchAlgorithm;
 
 public class AiPlayer extends Player {
 
-	ResearchAlphaBeta ab = new ResearchAlphaBeta();
-	ResearchPVS pvs = new ResearchPVS();
-	int turn;
+	private int turn;
+	private ResearchAlgorithm research;
 	
-	MCTSearch mtcs = new MCTSearch();
-
-	public AiPlayer(String id, PlayerKind kind) {
+	public ResearchAlgorithm getResearch() {
+		return research;
+	}
+	
+	public AiPlayer(String id, PlayerKind kind, ResearchAlgorithm research) {
 		super(id, kind);
 		turn = 0;
+		this.research = research;
 	}
 
 	@Override
 	public Move getNextMove(State newState) {
 //		if (this.getKind() == PlayerKind.WHITE && turn == 0)
 //		{	
-//			turn++;
+			turn++;
 //			return new Move(2, 4, 2, 2); 
 //		}
-//		return ab.AlphaBetaSearch(new HeuristicTablut(), 7, newState);
-//		return pvs.pvSearch(newState, Integer.MAX_VALUE, Integer.MIN_VALUE, 3);
-		TablutMCTSState MCTSState = new TablutMCTSState(newState);
-
-		return mtcs.findNextMove(MCTSState);
+		return this.getResearch().getNextMove(newState);
 	}
 
 }

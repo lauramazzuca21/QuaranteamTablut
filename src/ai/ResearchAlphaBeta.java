@@ -10,36 +10,40 @@ import domain.State;
 import enums.GameState;
 import enums.PlayerKind;
 
-public class ResearchAlphaBeta {
+public class ResearchAlphaBeta implements ResearchAlgorithm{
 
 		
 	private Map<Integer, Move> mapMoves;
 	private int maxDepth;
 	private HeuristicFunction h;
 	
+	public ResearchAlphaBeta(int maxDepth, HeuristicFunction h) {
+		this.h = h;
+		mapMoves = new HashMap<Integer, Move>();
+		this.maxDepth = maxDepth;
+	}
+	
+	
 	/**
 	 * algoritmo minmax con potature alpha-beta a profondità limitata
 	 * 
 	 * @params maxDepth
 	 * 					livelli di profondità da esplorare
-	 * @params ts
+	 * @params newState
 	 * 				rappresentazione dello stato
 	 * @return
 	 * 			ritorna la migliore azione 
 	 */
-	public Move AlphaBetaSearch(HeuristicFunction h, int  maxDepth, State ts) {
-
-		this.h = h;
-		mapMoves = new HashMap<Integer, Move>();
-		this.maxDepth = maxDepth;
-		
-		if(ts.getTurnOf().equals(PlayerKind.WHITE)) {	//MAX player
-			int v = MaxValue(maxDepth, Integer.MIN_VALUE, Integer.MAX_VALUE, ts);
+	@Override
+	public Move getNextMove(State newState) {
+		TranspositionTable.getInstance().clear();
+		if(newState.getTurnOf().equals(PlayerKind.WHITE)) {	//MAX player
+			int v = MaxValue(maxDepth, Integer.MIN_VALUE, Integer.MAX_VALUE, newState);
 			System.gc();
 			return mapMoves.get(v);	//si recupera l'azione con il valore v più alto
 		}
-		else if(ts.getTurnOf().equals(PlayerKind.BLACK)) {	//MIN player
-			int v = MinValue(maxDepth, Integer.MIN_VALUE, Integer.MAX_VALUE, ts);
+		else if(newState.getTurnOf().equals(PlayerKind.BLACK)) {	//MIN player
+			int v = MinValue(maxDepth, Integer.MIN_VALUE, Integer.MAX_VALUE, newState);
 			System.gc();
 			return mapMoves.get(v);	//si recupera l'azione con il valore v più basso
 		}			
@@ -66,22 +70,30 @@ public class ResearchAlphaBeta {
 			//System.out.println("[MAX] CUTOFF" );
 			return h.getStateValue(state) - depth;
 		}
-		int tmp;
-		int v = Integer.MIN_VALUE;
-
+		Integer v = null;
+		
+		v = Integer.MIN_VALUE;
+		
 		//System.out.println("[MAX] Depth: " + depth );
 		//System.out.println("[MAX] Alpha: " + alpha );
 		//System.out.println("[MAX] Beta: " + beta );
 		
 		List<Move> moves = state.getPossibleMoves(PlayerKind.WHITE);
-
+		String board = null;
 		//System.out.println("[MAX] Possible Moves: " + moves.size() );
 		for (Move m : moves) {
-		
+			Integer tmp = null;
 			Position[] eaten = state.applyMove(m);
+			board = state.toString();
+//			if (TranspositionTable.getInstance().contains(board))
+//			{
+//				tmp = TranspositionTable.getInstance().getValue(board, depth);
+//			}
+//			
+//			if(tmp == null) {
+				tmp = MinValue(depth - 1, alpha, beta, state);
+//			} 
 			
-			tmp=MinValue(depth - 1, alpha, beta, state);
-		
 			state.undoMove(m, eaten);
 			
 			//tmp strettamente maggiore di v altirmenti inserisce nella mappa anche i valori infiniti
@@ -95,6 +107,7 @@ public class ResearchAlphaBeta {
 			if (v >= beta) {
 				//System.out.println("[MAX] Return Value: " + v );
 				//System.out.println("[MAX] Time elapsed: " + (System.currentTimeMillis() - now) );
+//				TranspositionTable.getInstance().add(board, depth, v);
 				return v;
 			}
 
@@ -103,6 +116,8 @@ public class ResearchAlphaBeta {
 		
 		//System.out.println("[MAX] Return Value: " + v );
 		//System.out.println("[MAX] Time elapsed: " + (System.currentTimeMillis() - now) );
+//		TranspositionTable.getInstance().add(board, depth, v);
+
 		return v;
 	
 
@@ -123,7 +138,6 @@ public class ResearchAlphaBeta {
 			//System.out.println("[MIN] CUTOFF" );
 			return h.getStateValue(state) + depth;
 		}
-		int tmp;
 		int v = Integer.MAX_VALUE;
 
 		//System.out.println("[MIN] Depth: " + depth );
@@ -133,13 +147,20 @@ public class ResearchAlphaBeta {
 		List<Move> moves = state.getPossibleMoves(PlayerKind.BLACK);
 		
 		//System.out.println("[MIN] Possible Moves: " + moves.size() );
-				
+		String board = null;
 		for (Move m : moves) {											
-			//create childstate
-//			State childState = state.deepCopy();
+			Integer tmp = null;
 			Position[] eaten = state.applyMove(m);
+			board = state.toString();
+//			if (TranspositionTable.getInstance().contains(board))
+//			{
+//				tmp = TranspositionTable.getInstance().getValue(board, depth);
+//			}
+//			
+//			if(tmp == null) {
 			
-			tmp=MaxValue(depth - 1, alpha, beta, state);
+				tmp=MaxValue(depth - 1, alpha, beta, state);
+//			} 
 			
 			state.undoMove(m, eaten);
 			
@@ -152,12 +173,14 @@ public class ResearchAlphaBeta {
 			if (v <= alpha) {
 				//System.out.println("[MIN] Return Value: " + v );
 				//System.out.println("[MIN] Time elapsed: " + (System.currentTimeMillis() - now) );
+//				TranspositionTable.getInstance().add(board, depth, v);
 				return v;
 			}
 			beta = Math.min(beta, v);
 		}
 		//System.out.println("[MIN] Return Value: " + v );
 		//System.out.println("[MIN] Time elapsed: " + (System.currentTimeMillis() - now) );
+//		TranspositionTable.getInstance().add(board, depth, v);
 		return v;
 
 	}
@@ -175,5 +198,4 @@ public class ResearchAlphaBeta {
 			return depth <= 0 
 					|| (state.getGameState() != GameState.PLAYING);
 		}
-	
 }

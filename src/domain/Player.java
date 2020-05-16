@@ -1,12 +1,14 @@
 package domain;
 
+import ai.ResearchAlgorithm;
 import enums.PlayerKind;
 
 public abstract class Player {
 	
 	private String id;
 	private PlayerKind kind;
-	
+
+
 	public Player(String id, PlayerKind kind) {
 		this.id = id;
 		this.kind = kind;

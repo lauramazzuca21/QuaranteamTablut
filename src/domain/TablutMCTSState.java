@@ -26,7 +26,15 @@ public class TablutMCTSState extends TablutState {
     	}
     	
     	Random rand = new Random(); 
-    	Move toApply = moveList.get(Math.abs(rand.nextInt(moveList.size())));
+    	int idx = 0;
+    	try {
+    			rand.nextInt(moveList.size());
+    	} catch(IllegalArgumentException e) {
+    		
+    	}
+    	idx = Math.abs(idx);
+    	Move toApply = moveList.get(idx%moveList.size());
+    	PlayerKind currentPlayer = this.getTurnOf();
     	
     	applyMove(toApply);
 //    	Pair<GameState, PlayerKind> result = randomPlay();
@@ -35,7 +43,7 @@ public class TablutMCTSState extends TablutState {
 		
 //    	if (this.getGameState() != GameState.PLAYING)
 //    	{
-    		return new Pair<GameState, PlayerKind>(this.getGameState(), this.getTurnOf());
+    		return new Pair<GameState, PlayerKind>(this.getGameState(), currentPlayer);
 //    	} 	
    }
 
