@@ -283,16 +283,23 @@ public class TablutBoard extends Board {
 		return idx == 0 ? null : eatenPawns;
 	}
 	
-	public int getPawnCount(Pawn tipo) {
-		switch (tipo) {
-		case WHITE:
-			return whitePawns;
-		case BLACK:
-			return blackPawns;
-		default:
-			return -1;
-		}
+	public Pair<Integer, Integer> getPawnCount() {
+
+			return new Pair<Integer, Integer>(whitePawns, blackPawns);
 	}
+	
+	@Override
+	public int getPawnCount(Pawn pawnType) {
+
+		if (pawnType == Pawn.BLACK)
+			return blackPawns;
+		
+		if (pawnType == Pawn.WHITE)
+			return whitePawns;
+		
+		return -1;
+	}
+	
 	
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -340,6 +347,108 @@ public class TablutBoard extends Board {
 			if (eatenPawnType == Pawn.BLACK) blackPawns++;
 			else whitePawns++;
 		}
+	}
+	
+    public Pair<Integer, Integer> getKingQuadrantPieces() {
+
+        int whitePawnsOnflow = 0;
+        int blackPawnsOnFlow = 0;
+        
+        if (getKingPosition().getX() < 4) {
+            for (int i = 0; i < 4; i++)
+                for (int j = 0; j < 9; j++) {
+                    if (getPawn(i, j).equals(Pawn.WHITE))
+                        whitePawnsOnflow++;
+                    else if (getPawn(i, j).equals(Pawn.BLACK))
+                        blackPawnsOnFlow++;
+                }
+        } else if (getKingPosition().getX() > 4) {
+            for (int i = 5; i < 9; i++)
+                for (int j = 0; j < 9; j++) {
+                    if (getPawn(i, j).equals(Pawn.WHITE))
+                        whitePawnsOnflow++;
+                    else if (getPawn(i, j).equals(Pawn.BLACK))
+                        blackPawnsOnFlow++;
+                }
+
+        }
+        if (getKingPosition().getY() < 4) {
+            for (int i = 0; i < 9; i++)
+                for (int j = 0; j < 4; j++) {
+                    if (getPawn(i, j).equals(Pawn.WHITE))
+                        whitePawnsOnflow++;
+                    else if (getPawn(i, j).equals(Pawn.BLACK))
+                        blackPawnsOnFlow++;
+                }
+        } else if (getKingPosition().getY() > 4) {
+            for (int i = 0; i < 9; i++)
+                for (int j = 5; j < 9; j++) {
+                    if (getPawn(i, j).equals(Pawn.WHITE))
+                        whitePawnsOnflow++;
+                    else if (getPawn(i, j).equals(Pawn.BLACK))
+                        blackPawnsOnFlow++;
+                }
+
+        }
+        return new Pair<Integer, Integer>(whitePawnsOnflow, blackPawnsOnFlow);
+    }
+
+	
+	public boolean isKingInDanger(State state) {
+
+		Position kingpos = getKingPosition();
+		
+		int possibileCattura = countKingSurrounded();
+
+		if (kingpos.getX() == 4) {
+			if (kingpos.getY() == 4 && possibileCattura == 3) return true; // trono
+			else if (kingpos.getY() == 3 && possibileCattura == 2) return true; //adiacente al trono
+			else if (kingpos.getY() == 5 && possibileCattura == 2) return true;
+		}//adiacente al trono
+		else if (kingpos.getY() == 4) {
+			if (kingpos.getX() == 3 && possibileCattura == 2) return true;//adiacente al trono
+			else if (kingpos.getX() == 5 && possibileCattura == 2) return true;//adiacente al trono
+		} else if (kingpos.getX() == 2 && kingpos.getY() == 4) return true; //accampamento
+		else if (kingpos.getX() == 4 && kingpos.getY() == 2) return true;//accampamento
+		else if (kingpos.getX() == 6 && kingpos.getY() == 4) return true;//accampamento
+		else if (kingpos.getX() == 4 && kingpos.getY() == 6) return true;//accampamento
+
+		else if (possibileCattura == 1) return true;//altro
+
+		else if ((kingpos.getX() == 5 || kingpos.getX() == 3) && (kingpos.getY() == 1 || kingpos.getY() == 7)) return true;
+		else if ((kingpos.getX() == 1 || kingpos.getX() == 7) && (kingpos.getY() == 5 || kingpos.getY() == 3)) return true;
+
+		return false;
+
+	}
+
+	
+	public boolean isKingReadyToWin(State state) {
+		Position kingpos = getKingPosition();
+		
+		int x, y;
+		//se il percorso in orizzontale � libero e non c'� alcun accampamento
+		for (x = kingpos.getX()  + 1; x < getDimX(); x++)
+			if (!getPawn(x, kingpos.getY()).equals(Pawn.EMPTY) || (getTile(x, kingpos.getY()) == Tile.CAMP)) break;
+		
+		if (x == getDimX()) return true;
+		
+		for (x = kingpos.getX() - 1; x >= 0; x--)
+			if (!getPawn(x, kingpos.getY()).equals(Pawn.EMPTY) || ((getTile(x, kingpos.getY())==Tile.CAMP))) break;
+		if (x < 0) return true;
+		
+		//se il percorso in verticale � libero e non c'� alcun accampamento
+		for (y = kingpos.getY() + 1; y < getDimY(); y++)
+			if (!getPawn(kingpos.getX(), y).equals(Pawn.EMPTY) || (getTile(kingpos.getX(), y)==Tile.CAMP)) break;
+		
+		if (y == getDimX()) return true;
+		
+		for (y = kingpos.getY() - 1; y >= 0; y--)
+			if (!getPawn(kingpos.getX(), y).equals(Pawn.EMPTY) || (getTile(kingpos.getX(), y)==Tile.CAMP)) break;
+		if (y < 0) return true;
+		
+		//altrimenti non � pronto a vincere	
+		return false;
 	}
 	
 }

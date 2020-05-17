@@ -16,7 +16,6 @@ public class TablutMCTSState extends TablutState {
 	}
         
     public Pair<GameState, PlayerKind> randomPlay() {
-   
     	
     	List<Move> moveList = getPossibleMoves();
     	
@@ -37,14 +36,7 @@ public class TablutMCTSState extends TablutState {
     	PlayerKind currentPlayer = this.getTurnOf();
     	
     	applyMove(toApply);
-//    	Pair<GameState, PlayerKind> result = randomPlay();
-    	
-//		undoMove(toApply, eaten);
-		
-//    	if (this.getGameState() != GameState.PLAYING)
-//    	{
-    		return new Pair<GameState, PlayerKind>(this.getGameState(), currentPlayer);
-//    	} 	
+		return new Pair<GameState, PlayerKind>(this.getGameState(), currentPlayer);	
    }
 
 

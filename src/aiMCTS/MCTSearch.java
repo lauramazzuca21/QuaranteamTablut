@@ -88,21 +88,19 @@ public class MCTSearch  implements ResearchAlgorithm {
 
    
     private PlayerKind simulateRandomPlayout(Node nodeToExplore, TablutMCTSState state) {
-    	
+    	    	
     	TablutMCTSState stateCopy = state.deepCopy();
+    	Pair<GameState, PlayerKind> boardStatus;
     	
-    	Pair<GameState, PlayerKind> boardStatus  = stateCopy.randomPlay();
-    			
-		while (boardStatus.getKey() == GameState.PLAYING)
-		{
-			boardStatus = stateCopy.randomPlay();
-		}
+    	do {
+    		boardStatus = stateCopy.randomPlay();
+    	}while (boardStatus.getFirst() == GameState.PLAYING);
         
-        if (boardStatus.getKey() == GameState.LOSE) {
-            return boardStatus.getValue() == PlayerKind.WHITE ? PlayerKind.BLACK : PlayerKind.WHITE;
+        if (boardStatus.getFirst() == GameState.LOSE) {
+            return boardStatus.getSecond() == PlayerKind.WHITE ? PlayerKind.BLACK : PlayerKind.WHITE;
         }
-        else if (boardStatus.getKey()  == GameState.WIN){
-            return boardStatus.getValue();
+        else if (boardStatus.getFirst()  == GameState.WIN){
+            return boardStatus.getSecond();
         }
         else {
         	return null;

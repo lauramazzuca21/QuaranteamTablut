@@ -2,10 +2,12 @@ package test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import org.junit.jupiter.api.Test;
 
 import ai.HeuristicTablut;
+import ai.IterativeDeepeningSearch;
 import ai.ResearchAlphaBeta;
 import aiMCTS.MCTSearch;
 import domain.*;
@@ -96,15 +98,49 @@ class TestAi {
 //		}
 //	}
 //	
+//	@Test
+//	void test_AB_vs_MCS_10_turns() {
+//		List<Player> players = new ArrayList<Player>();
+//		
+//		players.add(new AiPlayer("TheQuaranteam", PlayerKind.WHITE, null, new ResearchAlphaBeta(7, new HeuristicTablut())));
+//		players.add(new AiPlayer("Adversary", PlayerKind.BLACK, null, new ResearchAlphaBeta(7, new HeuristicTablut())));
+//		
+//		int ww = 0, bw = 0, d = 0;
+////		for (int i = 0; i < 10; i++) {
+//			Game game = new TablutGame(players);
+//	
+//			while (game.getState().getGameState() == GameState.PLAYING)	
+//			{
+//				game.loop();
+//			}
+//			
+//			if (game.getState().hasWon(PlayerKind.WHITE)) ww++;
+//			else if (game.getState().hasWon(PlayerKind.BLACK)) bw++;
+//			else d++;
+////		}
+//		
+//		System.out.println("WHITE won: " + ww);
+//		System.out.println("BLACK won: " + bw);
+//		System.out.println("DRAW: " + d);
+//	}
+	
 	@Test
-	void test_AB_vs_MCS_10_turns() {
+	void test_IterativeDeepening_turns() {
 		List<Player> players = new ArrayList<Player>();
 		
-		players.add(new AiPlayer("TheQuaranteam", PlayerKind.WHITE, new MCTSearch(), new ResearchAlphaBeta(7, new HeuristicTablut())));
-		players.add(new AiPlayer("Adversary", PlayerKind.BLACK, new MCTSearch(), new ResearchAlphaBeta(7, new HeuristicTablut())));
+		int maxTime = 55000;
+		
+		Function<Pair<Long, Long>, Boolean> f = pair -> {
+			if((pair.getFirst() - pair.getSecond()) >= maxTime) 
+				return true; 
+			else return false;
+		};
+		
+		players.add(new AiPlayer("TheQuaranteam", PlayerKind.WHITE, null, new IterativeDeepeningSearch(3, 11, f)));
+		players.add(new AiPlayer("Adversary", PlayerKind.BLACK, null, new IterativeDeepeningSearch(3, 11, f)));
 		
 		int ww = 0, bw = 0, d = 0;
-		for (int i = 0; i < 10; i++) {
+//		for (int i = 0; i < 10; i++) {
 			Game game = new TablutGame(players);
 	
 			while (game.getState().getGameState() == GameState.PLAYING)	
@@ -115,7 +151,7 @@ class TestAi {
 			if (game.getState().hasWon(PlayerKind.WHITE)) ww++;
 			else if (game.getState().hasWon(PlayerKind.BLACK)) bw++;
 			else d++;
-		}
+//		}
 		
 		System.out.println("WHITE won: " + ww);
 		System.out.println("BLACK won: " + bw);

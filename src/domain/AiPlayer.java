@@ -24,7 +24,7 @@ public class AiPlayer extends Player {
 	public Move getNextMove(State newState) {
 		System.gc();
 
-		if (turn < 4)
+		if (turn < 4 && researchInitial != null)
 		{	
 			turn++;
 			return this.researchInitial.getNextMove(newState);

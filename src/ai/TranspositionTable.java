@@ -29,7 +29,7 @@ public class TranspositionTable extends LinkedHashMap<String, Pair<Integer, Inte
 	public void add(String board, int depth, int value) {
 		
 		if (this.containsKey(board)) {
-			int oldDepth = this.get(board).getKey();
+			int oldDepth = this.get(board).getFirst();
 			if (oldDepth < depth)
 				this.put(board, new Pair<Integer, Integer>(depth, value));
 		}
@@ -45,9 +45,9 @@ public class TranspositionTable extends LinkedHashMap<String, Pair<Integer, Inte
 	public Integer getValue(String board, int depth) {
 		
 		if(this.containsKey(board))
-			return //this.get(board).getKey() > depth ? 
-					this.get(board).getValue() 
-					//: null
+			return this.get(board).getFirst() > depth ? 
+					this.get(board).getSecond() 
+					: null
 					;
 			
 		return null;

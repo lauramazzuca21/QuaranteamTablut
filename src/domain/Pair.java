@@ -1,30 +1,30 @@
 package domain;
 
-public class Pair<Key, Value> {
+public class Pair<F, S> {
 
-	private Key key;
-	private Value value;
+	private F first;
+	private S second;
 	
-	public Key getKey() {
-		return key;
+	public F getFirst() {
+		return first;
 	}
 	
-	public void setKey(Key key) {
-		this.key = key;
+	public void setFirst(F first) {
+		this.first = first;
 	}
 	
-	public Value getValue() {
-		return value;
+	public S getSecond() {
+		return second;
 	}
 	
-	public void setValue(Value value) {
-		this.value = value;
+	public void setValue(S second) {
+		this.second = second;
 	}
 	
-	public Pair(Key key, Value value) {
+	public Pair(F first, S second) {
 		super();
-		this.key = key;
-		this.value = value;
+		this.first = first;
+		this.second = second;
 	}
 	
 }
