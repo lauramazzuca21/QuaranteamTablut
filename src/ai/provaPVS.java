@@ -12,9 +12,9 @@ import ai.HeuristicTablut;
 
 
 public class provaPVS {
-
+	/*
 	static int SEARCHDEPTH = 5;
-/*
+
 	//	 returns either beta-1 or beta
 
     public static double zWSearch(State state, int beta, int depth) {

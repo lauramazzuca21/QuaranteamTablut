@@ -23,7 +23,6 @@ public class ResearchAlphaBeta implements ResearchAlgorithm{
 		this.maxDepth = maxDepth;
 	}
 	
-	
 	/**
 	 * algoritmo minmax con potature alpha-beta a profondità limitata
 	 * 
@@ -34,6 +33,7 @@ public class ResearchAlphaBeta implements ResearchAlgorithm{
 	 * @return
 	 * 			ritorna la migliore azione 
 	 */
+
 	@Override
 	public Move getNextMove(State newState) {
 		TranspositionTable.getInstance().clear();
