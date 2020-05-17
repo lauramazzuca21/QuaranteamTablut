@@ -66,6 +66,7 @@ public class IterativeDeepeningSearch implements ResearchAlgorithm {
 			possibleMoves = mapMoves.values();
 		}
 		System.out.println("depth reached: " + currentMaxDepth);
+		System.out.println("apply done: " + newState.applyDone + " undo done: " + newState.undoDone);
 		
 		return currentBestMove;
 	}

@@ -147,7 +147,7 @@ public class TablutState extends State {
 		updateGameState();
 				
 		this.setTurnOf(getTurnOf() == PlayerKind.WHITE ? PlayerKind.BLACK : PlayerKind.WHITE);
-		
+		applyDone++;
 		return eaten;
 		
 	}
@@ -221,6 +221,8 @@ public class TablutState extends State {
 		
 		this.setTurnOf(getTurnOf() == PlayerKind.WHITE ? PlayerKind.BLACK : PlayerKind.WHITE);
 		setCurrentBoard();
+		
+		undoDone++;
 		
 	}
 }

@@ -140,7 +140,7 @@ class TestAi {
 		players.add(new AiPlayer("Adversary", PlayerKind.BLACK, null, new IterativeDeepeningSearch(3, 11, f)));
 		
 		int ww = 0, bw = 0, d = 0;
-//		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 10; i++) {
 			Game game = new TablutGame(players);
 	
 			while (game.getState().getGameState() == GameState.PLAYING)	
@@ -151,7 +151,7 @@ class TestAi {
 			if (game.getState().hasWon(PlayerKind.WHITE)) ww++;
 			else if (game.getState().hasWon(PlayerKind.BLACK)) bw++;
 			else d++;
-//		}
+		}
 		
 		System.out.println("WHITE won: " + ww);
 		System.out.println("BLACK won: " + bw);

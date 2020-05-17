@@ -11,6 +11,9 @@ public abstract class State implements Cloneable {
 
 	private PlayerKind turnOf;
 	private GameState currentState;
+	
+	public int applyDone = 0;
+	public int undoDone = 0;
 
 	public State(Board board, PlayerKind startingPlayer) {
 		this.board = board;

@@ -451,4 +451,62 @@ public class TablutBoard extends Board {
 		return false;
 	}
 	
+	
+	public boolean isKingInDanger() {
+
+		Position kingpos = getKingPosition();
+		int kingY = kingpos.getY();
+		int kingX = kingpos.getX();
+		int possibileCattura = countKingSurrounded();
+
+		if (kingX == 4) {
+			if (kingY == 4 && possibileCattura == 3) return true; // trono
+			else if (kingY == 3 && possibileCattura == 2) return true; //adiacente al trono
+			else if (kingY == 5 && possibileCattura == 2) return true;
+		}
+		else if (kingY == 4) {
+			if ((kingX == 3 || kingX == 5) && possibileCattura == 2) return true;//adiacente al trono
+		} 
+		else if (kingX == 2 && kingY == 4) return true; //accampamento
+		else if (kingX == 4 && ( kingY == 2 || kingY == 6)) return true;//accampamento
+		else if (kingX == 6 && kingY == 4) return true;//accampamento
+
+		else if (possibileCattura == 1) return true;//altro
+
+		else if ((kingX == 5 || kingX == 3) && (kingY == 1 || kingY == 7)) return true;
+		else if ((kingX == 1 || kingX == 7) && (kingY == 5 || kingY == 3)) return true;
+
+		return false;
+
+	}
+
+	
+	public boolean isKingReadyToWin() {
+		Position kingpos = getKingPosition();
+		int kingY = kingpos.getY();
+		int kingX = kingpos.getX();
+		
+		int x, y;
+		//se il percorso in orizzontale � libero e non c'� alcun accampamento
+		for (x = kingX  + 1; x < getDimX(); x++)
+			if (!getPawn(x, kingY).equals(Pawn.EMPTY) || (getTile(x, kingY) == Tile.CAMP)) break;
+		if (x == getDimX()) return true;
+		
+		for (x = kingX - 1; x >= 0; x--)
+			if (!getPawn(x, kingY).equals(Pawn.EMPTY) || ((getTile(x, kingY)==Tile.CAMP))) break;
+		if (x < 0) return true;
+		
+		//se il percorso in verticale � libero e non c'� alcun accampamento
+		for (y = kingY + 1; y < getDimY(); y++)
+			if (!getPawn(kingX, y).equals(Pawn.EMPTY) || (getTile(kingX, y)==Tile.CAMP)) break;
+		if (y == getDimX()) return true;
+		
+		for (y = kingY - 1; y >= 0; y--)
+			if (!getPawn(kingX, y).equals(Pawn.EMPTY) || (getTile(kingX, y)==Tile.CAMP)) break;
+		if (y < 0) return true;
+		
+		//altrimenti non � pronto a vincere	
+		return false;
+	}
+	
 }
