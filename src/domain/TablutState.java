@@ -13,7 +13,7 @@ public class TablutState extends State {
 
 	private Stack<String> boardHistory;
 	String currentBoard;
-	
+		
 	public TablutState(Board board) {
 		super(board, PlayerKind.WHITE);
 		setCurrentBoard();
@@ -24,7 +24,7 @@ public class TablutState extends State {
 	@Override
 	public List<Move> getPossibleMoves(PlayerKind playerKind) {
 		List<Move> result = new ArrayList<Move>();
-		Board board = getBoard();
+		TablutBoard board = (TablutBoard)getBoard();
 		int dimX = board.getDimX();
 		int dimY = board.getDimY();
 		
@@ -38,91 +38,125 @@ public class TablutState extends State {
 						)
 						|| (playerKind == PlayerKind.BLACK && board.getPawn(x, y) == Pawn.BLACK)   )
 				{
-					boolean stopPrevHorizontal = false;
-					boolean stopPrevVertical = false;
-					boolean stopPostHorizontal = false;
-					boolean stopPostVertical = false;
+//					boolean stopPrevHorizontal = false;
+//					boolean stopPrevVertical = false;
+//					boolean stopPostHorizontal = false;
+//					boolean stopPostVertical = false;
+					Position current = new Position(x, y);
 					
-					//controllo mosse possibili in un unico ciclo
-					for (int prevX = x-1, prevY = y-1, postX = x+1, postY = y+1;
-							!stopPrevHorizontal || !stopPrevVertical
-							|| !stopPostHorizontal || !stopPostVertical; 
-							prevX--, prevY--, postX++, postY++)
-					{
-						
+					for (int prevX = x-1; prevX >= 0; prevX--) {
 						//celle precedenti
-							//in orizzontale...
-						if (prevX >= 0 
-								&& !stopPrevHorizontal
-								&& board.getPawn(prevX, y) == Pawn.EMPTY 
-								&& board.getTile(prevX, y) != Tile.CAMP 
-								&& board.getTile(prevX, y) != Tile.CASTLE )
+						//in orizzontale...
+						if ( board.getPawn(prevX, y) == Pawn.EMPTY 
+							&&( (board.getBlackPawnsInCentralCitadels().containsKey(current)
+									&& !board.getBlackPawnsInCentralCitadels().get(current)) 
+								|| board.getTile(prevX, y) != Tile.CAMP )
+							&& board.getTile(prevX, y) != Tile.CASTLE )
 						{
 							result.add(new Move(x, y, prevX, y));
 						}
-						else stopPrevHorizontal = true;
-							//...e in verticale
-						
-						if (prevY >= 0
-								&& !stopPrevVertical
-								&&  board.getPawn(x, prevY) == Pawn.EMPTY 
-								&& board.getTile(x, prevY) != Tile.CAMP 
-								&& board.getTile(x, prevY) != Tile.CASTLE )
+						else break;
+					}
+					
+					for (int prevY = y-1; prevY >= 0; prevY--) {
+						if (board.getPawn(x, prevY) == Pawn.EMPTY 
+							&&( (board.getBlackPawnsInCentralCitadels().containsKey(current)
+									&& !board.getBlackPawnsInCentralCitadels().get(current)) 
+								|| board.getTile(x, prevY) != Tile.CAMP )
+							&& board.getTile(x, prevY) != Tile.CASTLE )
 						{
 							result.add(new Move(x, y, x, prevY));
 						}
-						else stopPrevVertical = true;
-						
-						//celle successive
-							//in orizzontale...
-						if (postX < dimX 
-								&& !stopPostHorizontal
-								&&  board.getPawn(postX, y) == Pawn.EMPTY 
-								&& board.getTile(postX, y) != Tile.CAMP 
+						else break;
+					}
+					
+					for (int postX = x+1; postX < dimX; postX++) {
+						if (board.getPawn(postX, y) == Pawn.EMPTY 
+								&&( (board.getBlackPawnsInCentralCitadels().containsKey(current)
+										&& !board.getBlackPawnsInCentralCitadels().get(current)) 
+									|| board.getTile(postX, y) != Tile.CAMP )
 								&& board.getTile(postX, y) != Tile.CASTLE )
 						{
 							result.add(new Move(x, y, postX, y));
 						}
-						else stopPostHorizontal = true;
-											
-							//...e in verticale
-						
-						if (postY < dimY
-								&& !stopPostVertical
-								&&  board.getPawn(x, postY) == Pawn.EMPTY 
-								&& board.getTile(x, postY) != Tile.CAMP 
+						else break;
+					}
+					
+					for (int postY = y+1; postY < dimY; postY++) {
+						if (board.getPawn(x, postY) == Pawn.EMPTY 
+								&&( (board.getBlackPawnsInCentralCitadels().containsKey(current)
+										&& !board.getBlackPawnsInCentralCitadels().get(current)) 
+									|| board.getTile(x, postY) != Tile.CAMP )
 								&& board.getTile(x, postY) != Tile.CASTLE )
 						{
 							result.add(new Move(x, y, x, postY));
 						}
-						else stopPostVertical = true;
-					}// for					
+						else break;
+					}
+					
+					
+					//controllo mosse possibili in un unico ciclo
+//					for (int prevX = x-1, prevY = y-1, postX = x+1, postY = y+1;
+//							!stopPrevHorizontal || !stopPrevVertical
+//							|| !stopPostHorizontal || !stopPostVertical; 
+//							prevX--, prevY--, postX++, postY++)
+//					{
+//						
+//						//celle precedenti
+//							//in orizzontale...
+//						if (prevX >= 0 
+//								&& !stopPrevHorizontal
+//								&& board.getPawn(prevX, y) == Pawn.EMPTY 
+//								&& board.getTile(prevX, y) != Tile.CAMP 
+//								&& board.getTile(prevX, y) != Tile.CASTLE )
+//						{
+//							result.add(new Move(x, y, prevX, y));
+//						}
+//						else stopPrevHorizontal = true;
+//							//...e in verticale
+//						
+//						if (prevY >= 0
+//								&& !stopPrevVertical
+//								&&  board.getPawn(x, prevY) == Pawn.EMPTY 
+//								&& board.getTile(x, prevY) != Tile.CAMP 
+//								&& board.getTile(x, prevY) != Tile.CASTLE )
+//						{
+//							result.add(new Move(x, y, x, prevY));
+//						}
+//						else stopPrevVertical = true;
+//						
+//						//celle successive
+//							//in orizzontale...
+//						if (postX < dimX 
+//								&& !stopPostHorizontal
+//								&&  board.getPawn(postX, y) == Pawn.EMPTY 
+//								&& board.getTile(postX, y) != Tile.CAMP 
+//								&& board.getTile(postX, y) != Tile.CASTLE )
+//						{
+//							result.add(new Move(x, y, postX, y));
+//						}
+//						else stopPostHorizontal = true;
+//											
+//							//...e in verticale
+//						
+//						if (postY < dimY
+//								&& !stopPostVertical
+//								&&  board.getPawn(x, postY) == Pawn.EMPTY 
+//								&& board.getTile(x, postY) != Tile.CAMP 
+//								&& board.getTile(x, postY) != Tile.CASTLE )
+//						{
+//							result.add(new Move(x, y, x, postY));
+//						}
+//						else stopPostVertical = true;
+//					
+//					}// for					
 				}//if WHITE or KING
 			}//for y
 			
 		}//for x
 		
-		
 		return result;
-//		return removeRepeatingConfigurationMoves(result);
 	}
-	
-//	private List<Move> removeRepeatingConfigurationMoves(List<Move> moves) {
-//		
-//		List<Move> result = new ArrayList<Move>();
-//		
-//		for (Move m : moves) {			
-//			Position[] eaten = getBoard().applyMove(m);
-//			
-//			if (!checkRepeatingBoardConfiguration(getBoard().toString()))
-//			{
-//				result.add(m);
-//			}
-//			
-//			getBoard().undoMove(m, eaten);
-//		}
-//		return result;
-//	}
 	
 	public boolean checkRepeatingBoardConfiguration(String current) {
 		boardHistory.trimToSize();
@@ -147,7 +181,6 @@ public class TablutState extends State {
 		updateGameState();
 				
 		this.setTurnOf(getTurnOf() == PlayerKind.WHITE ? PlayerKind.BLACK : PlayerKind.WHITE);
-		applyDone++;
 		return eaten;
 		
 	}
@@ -208,7 +241,7 @@ public class TablutState extends State {
 	}
 
 	private void setCurrentBoard() {
-		currentBoard = getTurnOf() + "\n" + this.getBoard().toString();
+		currentBoard = this.getTurnOf() + "\n" + this.getBoard().toString();
 	}
 	
 	@Override
@@ -221,8 +254,6 @@ public class TablutState extends State {
 		
 		this.setTurnOf(getTurnOf() == PlayerKind.WHITE ? PlayerKind.BLACK : PlayerKind.WHITE);
 		setCurrentBoard();
-		
-		undoDone++;
-		
+			
 	}
 }

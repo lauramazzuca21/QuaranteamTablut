@@ -91,8 +91,8 @@ public class Position {
 		Position[] positions = new Position[2];
 		int idx = 0;
 		
-		if (getNextPositionY(yBound) != null)  positions[idx] = getNextPositionY(yBound);
-		if (getPreviousPositionY() != null)  positions[idx] = getPreviousPositionY();
+		if (getNextPositionY(yBound) != null)  positions[idx] = getNextPositionY(yBound); idx++;
+		if (getPreviousPositionY() != null)  positions[idx] = getPreviousPositionY(); idx++;
 		
 		return positions;
 	}
@@ -101,4 +101,25 @@ public class Position {
 	public String toString() {
 		return "[" + this.getX() + ", " + this.getY() + "]";
 	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + x * 2 + y;  
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Position incoming = (Position) obj;
+		return this.x == incoming.getX() && this.y == incoming.getY();
+	}
+
 }

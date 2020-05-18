@@ -1,5 +1,8 @@
 package domain;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import enums.Loader;
 import enums.Pawn;
 import enums.Tile;
@@ -10,6 +13,7 @@ public class TablutBoard extends Board {
 	public static int DIM = 9;
 	
 	private Position kingPosition = new Position(4, 4);
+	Map<Position, Boolean> blackPawnsInCentralCitadels = new HashMap<Position, Boolean>();
 	
 	private int whitePawns = 8;
 	private int blackPawns = 16;
@@ -24,6 +28,10 @@ public class TablutBoard extends Board {
 	
 	public Position getKingPosition() {
 		return kingPosition;
+	}
+
+	public Map<Position, Boolean> getBlackPawnsInCentralCitadels() {
+		return blackPawnsInCentralCitadels;
 	}
 
 	public TablutBoard(Loader boardLoader, String source) {
@@ -41,6 +49,11 @@ public class TablutBoard extends Board {
 		BoardLoader loader = BoardLoader.BoardLoaderFactory(boardLoader, source);
 		this.setPawnBoard(loader.getPawnBoardSetup());
 		this.setTileBoard(loader.getTileBoardSetup());
+		
+		blackPawnsInCentralCitadels.put(new Position(4, 0), false);
+		blackPawnsInCentralCitadels.put(new Position(0, 4), false);
+		blackPawnsInCentralCitadels.put(new Position(4, 8), false);
+		blackPawnsInCentralCitadels.put(new Position(8, 4), false);
 	}
 	
 	@Override
@@ -58,9 +71,41 @@ public class TablutBoard extends Board {
 		if (getPawn(m.getStarting()) == Pawn.KING)
 			kingPosition = m.getEnding();
 		
+		if (blackPawnsInCentralCitadels.containsKey(m.getStarting()))
+			blackPawnsInCentralCitadels.put(m.getStarting(), true);
+		
 		super.applyMove(m);
 		
 		return eaten;
+	}
+	
+	@Override
+	public void undoMove(Move m, Position[] eaten) {
+		
+		Pawn pawnType = getPawn(m.getEnding());
+		
+		super.removePawn(m.getEnding());
+		
+		getPawnBoard()[m.getStartX()][m.getStartY()] = pawnType;
+		
+		if (pawnType == Pawn.KING)
+			kingPosition = m.getStarting();
+		
+		if (blackPawnsInCentralCitadels.containsKey(m.getStarting()))
+			blackPawnsInCentralCitadels.put(m.getStarting(), false);
+		
+		if( eaten == null)
+				return;
+		
+		for (int i = 0; i < eaten.length; i++)
+		{
+			if (eaten[i] == null)
+				break;
+			Pawn eatenPawnType = pawnType == Pawn.WHITE || pawnType == Pawn.KING ? Pawn.BLACK : Pawn.WHITE;
+			getPawnBoard()[eaten[i].getX()][eaten[i].getY()] = eatenPawnType;
+			if (eatenPawnType == Pawn.BLACK) blackPawns++;
+			else whitePawns++;
+		}
 	}
 	
 	@Override
@@ -102,7 +147,8 @@ public class TablutBoard extends Board {
 		int kingSurrounded = countKingSurrounded();
 		if ( (getTile(kingPosition) == Tile.CASTLE && kingSurrounded == 4)
 				|| (isKingAdiacentToCastle() && kingSurrounded == 3)
-				|| kingSurrounded == 2 && (surroundedOnX(kingPosition) || surroundedOnY(kingPosition))
+				|| surroundedOnX(kingPosition) 
+				|| surroundedOnY(kingPosition)
 				|| surroundedAdiacentToCitadel(kingPosition))
 		{
 			return true;
@@ -127,7 +173,8 @@ public class TablutBoard extends Board {
 		for (Position p : position.getHorizontalNeighbors(DIM, DIM))
 		{
 			Pawn onSide = getPawn(p);
-			if ( (onSide == Pawn.BLACK && type == Pawn.WHITE) || (onSide == Pawn.WHITE && type == Pawn.BLACK)) {
+			if ( (onSide == Pawn.BLACK && (type == Pawn.WHITE || type == Pawn.KING)) 
+					|| ((onSide == Pawn.WHITE|| onSide == Pawn.KING) && type == Pawn.BLACK)) {
 				surround++;
 			}
 		}
@@ -141,7 +188,8 @@ public class TablutBoard extends Board {
 		for (Position p : position.getVerticalNeighbors(DIM, DIM))
 		{
 			Pawn onSide = getPawn(p);
-			if ( (onSide == Pawn.BLACK && type == Pawn.WHITE) || (onSide == Pawn.WHITE && type == Pawn.BLACK)) {
+			if ( (onSide == Pawn.BLACK  && (type == Pawn.WHITE || type == Pawn.KING)) 
+					|| ((onSide == Pawn.WHITE|| onSide == Pawn.KING) && type == Pawn.BLACK)) {
 				surround++;
 			}
 		}
@@ -322,32 +370,6 @@ public class TablutBoard extends Board {
 		return builder.toString();
 		
 	}
-
-	@Override
-	public void undoMove(Move m, Position[] eaten) {
-		
-		Pawn pawnType = getPawn(m.getEnding());
-		
-		super.removePawn(m.getEnding());
-		
-		getPawnBoard()[m.getStartX()][m.getStartY()] = pawnType;
-		
-		if (pawnType == Pawn.KING)
-			kingPosition = m.getStarting();
-		
-		if( eaten == null)
-				return;
-		
-		for (int i = 0; i < eaten.length; i++)
-		{
-			if (eaten[i] == null)
-				break;
-			Pawn eatenPawnType = pawnType == Pawn.WHITE || pawnType == Pawn.KING ? Pawn.BLACK : Pawn.WHITE;
-			getPawnBoard()[eaten[i].getX()][eaten[i].getY()] = eatenPawnType;
-			if (eatenPawnType == Pawn.BLACK) blackPawns++;
-			else whitePawns++;
-		}
-	}
 	
     public Pair<Integer, Integer> getKingQuadrantPieces() {
 
@@ -391,66 +413,7 @@ public class TablutBoard extends Board {
 
         }
         return new Pair<Integer, Integer>(whitePawnsOnflow, blackPawnsOnFlow);
-    }
-
-	
-	public boolean isKingInDanger(State state) {
-
-		Position kingpos = getKingPosition();
-		
-		int possibileCattura = countKingSurrounded();
-
-		if (kingpos.getX() == 4) {
-			if (kingpos.getY() == 4 && possibileCattura == 3) return true; // trono
-			else if (kingpos.getY() == 3 && possibileCattura == 2) return true; //adiacente al trono
-			else if (kingpos.getY() == 5 && possibileCattura == 2) return true;
-		}//adiacente al trono
-		else if (kingpos.getY() == 4) {
-			if (kingpos.getX() == 3 && possibileCattura == 2) return true;//adiacente al trono
-			else if (kingpos.getX() == 5 && possibileCattura == 2) return true;//adiacente al trono
-		} else if (kingpos.getX() == 2 && kingpos.getY() == 4) return true; //accampamento
-		else if (kingpos.getX() == 4 && kingpos.getY() == 2) return true;//accampamento
-		else if (kingpos.getX() == 6 && kingpos.getY() == 4) return true;//accampamento
-		else if (kingpos.getX() == 4 && kingpos.getY() == 6) return true;//accampamento
-
-		else if (possibileCattura == 1) return true;//altro
-
-		else if ((kingpos.getX() == 5 || kingpos.getX() == 3) && (kingpos.getY() == 1 || kingpos.getY() == 7)) return true;
-		else if ((kingpos.getX() == 1 || kingpos.getX() == 7) && (kingpos.getY() == 5 || kingpos.getY() == 3)) return true;
-
-		return false;
-
-	}
-
-	
-	public boolean isKingReadyToWin(State state) {
-		Position kingpos = getKingPosition();
-		
-		int x, y;
-		//se il percorso in orizzontale � libero e non c'� alcun accampamento
-		for (x = kingpos.getX()  + 1; x < getDimX(); x++)
-			if (!getPawn(x, kingpos.getY()).equals(Pawn.EMPTY) || (getTile(x, kingpos.getY()) == Tile.CAMP)) break;
-		
-		if (x == getDimX()) return true;
-		
-		for (x = kingpos.getX() - 1; x >= 0; x--)
-			if (!getPawn(x, kingpos.getY()).equals(Pawn.EMPTY) || ((getTile(x, kingpos.getY())==Tile.CAMP))) break;
-		if (x < 0) return true;
-		
-		//se il percorso in verticale � libero e non c'� alcun accampamento
-		for (y = kingpos.getY() + 1; y < getDimY(); y++)
-			if (!getPawn(kingpos.getX(), y).equals(Pawn.EMPTY) || (getTile(kingpos.getX(), y)==Tile.CAMP)) break;
-		
-		if (y == getDimX()) return true;
-		
-		for (y = kingpos.getY() - 1; y >= 0; y--)
-			if (!getPawn(kingpos.getX(), y).equals(Pawn.EMPTY) || (getTile(kingpos.getX(), y)==Tile.CAMP)) break;
-		if (y < 0) return true;
-		
-		//altrimenti non � pronto a vincere	
-		return false;
-	}
-	
+    }	
 	
 	public boolean isKingInDanger() {
 
@@ -507,6 +470,36 @@ public class TablutBoard extends Board {
 		
 		//altrimenti non � pronto a vincere	
 		return false;
+	}
+	
+	public int pawnsBlockingKingVictory() {
+		int kingY = kingPosition.getY();
+		int kingX = kingPosition.getX();
+		
+		if ( kingX < 5 && kingX > 3 && kingY < 5 && kingY > 3 )
+			return 0; //because the camps are the ones blocking its path
+		
+		int blockingVictory = 0;
+		
+		//controllo mosse possibili in un unico ciclo
+		for (int prevX = kingX-1, prevY = kingY-1, postX = kingX+1, postY = kingY+1;
+				prevX >= 0 || prevY >= 0 || postX < DIM || postY < DIM; 
+				prevX--, prevY--, postX++, postY++)
+		{
+			//if king is on Y=7 the citadel blocks previous Xs
+			if (prevX >= 0 && kingY != 7 && !getPawn(prevX, kingY).equals(Pawn.EMPTY)) 
+				blockingVictory++;
+			if (postX < DIM &&  kingY != 1 && !getPawn(postX, kingY).equals(Pawn.EMPTY)) 
+				blockingVictory++;
+			if (prevY >= 0 && kingX != 7 && !getPawn(kingX, prevY).equals(Pawn.EMPTY))
+				blockingVictory++;
+			if (postY < DIM && kingX != 1 && !getPawn(kingX, postY).equals(Pawn.EMPTY)) 
+				blockingVictory++;
+
+
+		}
+		
+		return blockingVictory;
 	}
 	
 }
