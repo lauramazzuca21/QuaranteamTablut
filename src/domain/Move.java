@@ -1,6 +1,8 @@
 package domain;
 
-public class Move {
+import com.google.gson.JsonObject;
+
+public class Move implements JsonSerializable {
 
 	private Position starting;
 	private Position ending;
@@ -77,6 +79,29 @@ public class Move {
 	
 	public String toString() {
 		return "move from " + starting.getX() + ", " + starting.getY() + " to " + getEnding().getX() + ", " + getEnding().getY();
+	}
+
+	@Override
+	public String toJson() {
+		//Formato: 0 colonna, 1 riga
+		String to = Integer.toString(this.getFinalY()) + Integer.toString(this.getFinalX());
+		String from = Integer.toString(this.getStartY()) + Integer.toString(this.getStartX());
+		JsonObject obj = new JsonObject();
+		obj.addProperty("from",from);
+		obj.addProperty("to",to);
+		return obj.toString();
+	}
+
+	@Override
+	public void fromJson(String jsonString) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void fromJson(JsonObject jsonObj) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

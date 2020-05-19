@@ -3,6 +3,10 @@ package domain;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 import enums.Loader;
 import enums.Pawn;
 import enums.Tile;
@@ -495,5 +499,49 @@ public class TablutBoard extends Board {
 		
 		return new Pair<Integer, Integer>(whites, blacks);
 	}
-	
+
+	@Override
+	public String toJson() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void fromJson(String jsonString) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void fromJson(JsonObject obj) {
+		JsonArray jarr = obj.getAsJsonArray("board");
+		int x = 0;
+		int y = 0;
+		for (JsonElement jx : jarr){
+			JsonArray jArr2 = jx.getAsJsonArray();
+			for(JsonElement jy : jArr2) {
+				switch(jy.toString()) {
+				//		EMPTY("O"), WHITE("W"), BLACK("B"), THRONE("T"), KING("K");
+					case "EMPTY": {
+						this.getPawnBoard()[x][y] = Pawn.EMPTY;
+					}
+					case "WHITE": {
+						this.getPawnBoard()[x][y] = Pawn.WHITE;
+					}
+					case "BLACK": {
+						this.getPawnBoard()[x][y] = Pawn.BLACK;
+					}
+					case "THRONE": {
+						this.getPawnBoard()[x][y] = Pawn.EMPTY;
+					}
+					case "KING": {
+						this.getPawnBoard()[x][y] = Pawn.KING;
+						this.getKingPosition().setX(x);
+						this.getKingPosition().setY(y);
+					}
+				}
+				y++;
+			}
+			x++;
+		}
+	}
 }
