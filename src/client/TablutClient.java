@@ -3,10 +3,8 @@ package client;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.function.Function;
 
 import com.google.gson.Gson;
@@ -14,7 +12,6 @@ import com.google.gson.Gson;
 import enums.GameState;
 import enums.PlayerKind;
 import utils.StreamUtils;
-import domain.Action;
 import domain.AiPlayer;
 import domain.Move;
 import domain.Pair;
@@ -25,29 +22,27 @@ import ai.IterativeDeepeningSearch;
 
 public class TablutClient extends Client implements Runnable {
 	private final int MY_PORT = 9595;
+	public static int WHITEPORT = 5800;
+	public static int BLACKPORT = 5801;
 	PlayerKind role;
 	int timeOut;
 	InetAddress ip;
 	State state;
 	Player player;
 	Gson gson;
+	Socket playerSocket;
+	DataOutputStream out;
+	DataInputStream in;
+
 	
 	public TablutClient(PlayerKind role, int timeOut, InetAddress ip) {
 		this.role = role;
 		this.timeOut = timeOut;
 		this.ip = ip;
-	}
-	
-	public void run() {
-		
-		Socket playerSocket = null;
-		DataOutputStream out = null;
-		DataInputStream in = null;
-		
+			
 		try {
-			playerSocket = new Socket(InetAddress.getLocalHost(), MY_PORT);
+			playerSocket = new Socket(InetAddress.getLocalHost(), role == PlayerKind.WHITE ? WHITEPORT : BLACKPORT);
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
@@ -62,6 +57,9 @@ public class TablutClient extends Client implements Runnable {
 			e.printStackTrace();
 		}
 
+	}
+	
+	public void run() {
 		
 		Function<Pair<Long, Long>, Boolean> f = pair -> {
 			if((pair.getFirst() - pair.getSecond()) >= timeOut) 
@@ -81,7 +79,7 @@ public class TablutClient extends Client implements Runnable {
 		
 		while(true) {
 			try {
-				state = readState(in);
+				state.fromJson(readState(in)); 
 			} catch (ClassNotFoundException | IOException e) {
 				e.printStackTrace();
 			}
@@ -109,16 +107,8 @@ public class TablutClient extends Client implements Runnable {
 	
 	
 	private void sendMove(Move moveToSend, DataOutputStream out) {
-		//Formato: 0 colonna, 1 riga
-		String to = Integer.toString(moveToSend.getFinalY()) + Integer.toString(moveToSend.getFinalX());
-		String from = Integer.toString(moveToSend.getStartY()) + Integer.toString(moveToSend.getStartX());
-		Action a = new Action();
-		a.setFrom(from);
-		a.setTo(to);
-		gson = new Gson();
-		String jsonString = gson.toJson(a);
 		try {
-			StreamUtils.writeString(out, jsonString);
+			StreamUtils.writeString(out, moveToSend.toJson());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -126,11 +116,9 @@ public class TablutClient extends Client implements Runnable {
 
 	
 	
-	public State readState(DataInputStream in) throws ClassNotFoundException, IOException {
+	public String readState(DataInputStream in) throws ClassNotFoundException, IOException {
 		String inputString = StreamUtils.readString(in);
-		gson = new Gson();
-		State myState = gson.fromJson(inputString, State.class);
-		return myState;
+		return inputString;
 	}
 
 

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import enums.GameState;
 import enums.Pawn;
 import enums.PlayerKind;
@@ -38,10 +41,6 @@ public class TablutState extends State {
 						)
 						|| (playerKind == PlayerKind.BLACK && board.getPawn(x, y) == Pawn.BLACK)   )
 				{
-//					boolean stopPrevHorizontal = false;
-//					boolean stopPrevVertical = false;
-//					boolean stopPostHorizontal = false;
-//					boolean stopPostVertical = false;
 					Position current = new Position(x, y);
 					
 					for (int prevX = x-1; prevX >= 0; prevX--) {
@@ -93,63 +92,6 @@ public class TablutState extends State {
 						}
 						else break;
 					}
-					
-					
-					//controllo mosse possibili in un unico ciclo
-//					for (int prevX = x-1, prevY = y-1, postX = x+1, postY = y+1;
-//							!stopPrevHorizontal || !stopPrevVertical
-//							|| !stopPostHorizontal || !stopPostVertical; 
-//							prevX--, prevY--, postX++, postY++)
-//					{
-//						
-//						//celle precedenti
-//							//in orizzontale...
-//						if (prevX >= 0 
-//								&& !stopPrevHorizontal
-//								&& board.getPawn(prevX, y) == Pawn.EMPTY 
-//								&& board.getTile(prevX, y) != Tile.CAMP 
-//								&& board.getTile(prevX, y) != Tile.CASTLE )
-//						{
-//							result.add(new Move(x, y, prevX, y));
-//						}
-//						else stopPrevHorizontal = true;
-//							//...e in verticale
-//						
-//						if (prevY >= 0
-//								&& !stopPrevVertical
-//								&&  board.getPawn(x, prevY) == Pawn.EMPTY 
-//								&& board.getTile(x, prevY) != Tile.CAMP 
-//								&& board.getTile(x, prevY) != Tile.CASTLE )
-//						{
-//							result.add(new Move(x, y, x, prevY));
-//						}
-//						else stopPrevVertical = true;
-//						
-//						//celle successive
-//							//in orizzontale...
-//						if (postX < dimX 
-//								&& !stopPostHorizontal
-//								&&  board.getPawn(postX, y) == Pawn.EMPTY 
-//								&& board.getTile(postX, y) != Tile.CAMP 
-//								&& board.getTile(postX, y) != Tile.CASTLE )
-//						{
-//							result.add(new Move(x, y, postX, y));
-//						}
-//						else stopPostHorizontal = true;
-//											
-//							//...e in verticale
-//						
-//						if (postY < dimY
-//								&& !stopPostVertical
-//								&&  board.getPawn(x, postY) == Pawn.EMPTY 
-//								&& board.getTile(x, postY) != Tile.CAMP 
-//								&& board.getTile(x, postY) != Tile.CASTLE )
-//						{
-//							result.add(new Move(x, y, x, postY));
-//						}
-//						else stopPostVertical = true;
-//					
-//					}// for					
 				}//if WHITE or KING
 			}//for y
 			
@@ -273,5 +215,49 @@ public class TablutState extends State {
 		this.setTurnOf(getTurnOf() == PlayerKind.WHITE ? PlayerKind.BLACK : PlayerKind.WHITE);
 		setCurrentBoard();
 			
+	}
+
+	@Override
+	public String toJson() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public void fromJson(String jsonString) {
+		// 		EMPTY("O"), WHITE("W"), BLACK("B"), THRONE("T"), KING("K");
+		JsonObject obj = new JsonParser().parse(jsonString).getAsJsonObject();
+		switch(obj.get("turn").toString()) {
+			case "W": {
+				this.setTurnOf(PlayerKind.WHITE);
+			}
+			case "B": {
+				this.setTurnOf(PlayerKind.BLACK);
+			}
+			case "BW": {
+				if (getTurnOf()==PlayerKind.WHITE)
+					this.setGameState(GameState.LOSE);
+				if (getTurnOf()==PlayerKind.BLACK)
+					this.setGameState(GameState.WIN);
+			}
+			case "WW": {
+				if (getTurnOf()==PlayerKind.WHITE)
+					this.setGameState(GameState.WIN);
+				if (getTurnOf()==PlayerKind.BLACK)
+					this.setGameState(GameState.LOSE);
+			}			
+			case "D": {
+				this.setGameState(GameState.DRAW);
+			}
+		
+		}
+		this.getBoard().fromJson(obj);
+	}
+
+	@Override
+	public void fromJson(JsonObject jsonObj) {
+		// TODO Auto-generated method stub
+		
 	}
 }

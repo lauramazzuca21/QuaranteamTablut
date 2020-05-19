@@ -1,13 +1,15 @@
-package aiMCTS;
+package ai.MCTS;
 
 import java.util.List;
 
 import ai.ResearchAlgorithm;
 import domain.Move;
+import domain.Node;
 import domain.Pair;
 import domain.Position;
 import domain.State;
 import domain.TablutMCTSState;
+import domain.Tree;
 import enums.GameState;
 import enums.PlayerKind;
 

@@ -1,10 +1,9 @@
-package aiMCTS;
+package domain;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import domain.Move;
 import enums.PlayerKind;
 
 public class Node {

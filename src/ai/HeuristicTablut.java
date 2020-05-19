@@ -10,12 +10,15 @@ import enums.PlayerKind;
 
 public class HeuristicTablut implements HeuristicFunction{
 
-	private static final int WEIGTH1 = 500;
-	private static final int WEIGTH2 = 800;
-	private static final int WEIGTH3 = 40;
-	private static final int WEIGTH4 = 60;
-	private static final int WEIGTH5 = 20;
-	private static final int WEIGTH6 = 40;
+	private static final int WEIGHT1 = 500;
+	private static final int WEIGHT2 = 800;
+	private static final int WEIGHT3 = 40;
+	private static final int WEIGHT4 = 60;
+	private static final int WEIGHT5 = 20;
+	private static final int WEIGHT6 = 40;
+	private static final int WEIGHT7 = 60;
+	private static final int WEIGHT8 = 20;
+	
 	private static final int[][] position_weight = {
 	        {   0, 1000, 1000,   0,    0,   0, 1000, 1000,    0},
 	        {1000,  300,  200, 100,    0, 100,  200,  300, 1000},
@@ -43,46 +46,32 @@ public class HeuristicTablut implements HeuristicFunction{
 			result = -10000;
 		}
 		else if (state.getGameState() == GameState.DRAW)
-			result = 1000;
-		else {
 			result = state.getTurnOf() == PlayerKind.WHITE ? -9000 : 9000;
 		else 
 		{
 			if (tb.isKingReadyToWin())
-				result = result + WEIGTH1;
-			else {
+				result = result + WEIGHT1;
+			else
+			{
+				//assigns a higher weight to white blocking victory because they're aiding the black
 				Pair<Integer, Integer> pawns = tb.pawnsBlockingKingVictory();
 				if (pawns != null)
 				{
-//					result -= (pawns.getFirst()+pawns.getSecond()) * WEIGTH4;
-					result -= pawns.getFirst() * WEIGTH5;
-					result -= pawns.getSecond() * WEIGTH4;
+//					result -= (pawns.getFirst()+pawns.getSecond()) * WEIGHT4;
+					result -= pawns.getFirst() * WEIGHT8;
+					result -= pawns.getSecond() * WEIGHT7;
 				}
 			}
 				
 			if (tb.isKingInDanger())
-				result = result - WEIGTH2;
+				result = result - WEIGHT2;
 			
-			// valutazioni sul numero di pezzi
-			result = result + (tb.getPawnCount(Pawn.WHITE) * WEIGTH3);
-			result = result - (tb.getPawnCount(Pawn.BLACK) * WEIGTH4);
-
+			result = result + (tb.getPawnCount(Pawn.WHITE) * WEIGHT3);
+			result = result - (tb.getPawnCount(Pawn.BLACK) * WEIGHT4);
 	
-	//		//considerazioni sulle pedine nella zona del re
-			Pair<Integer, Integer> pawnsInFlow = tb.getKingQuadrantPieces();
-			result += pawnsInFlow.getFirst() * WEIGTH5;
-			result -= pawnsInFlow.getSecond() * WEIGTH6;
-			
-//			//considerazioni sulle pedine nella zona del re
-//			Pair<Integer, Integer> pawnsInFlow = tb.getKingQuadrantPieces();
-//			result += pawnsInFlow.getFirst() * WEIGTH5;
-//			result -= pawnsInFlow.getSecond() * WEIGTH6;
-//			// considerazioni sulle pedine in diagonale rispetto al re
-//			result += state.getPawnsOnKingDiagonal() * WEIGTH7;
-//			result += state.getPawnsOnKingDiagonal2() * WEIGTH8;
-//			return result;
-//			return 0;
-			
+			Pair<Integer, Integer> halfBoardPawns = tb.getKingHalfBoardPawns();
+			result += halfBoardPawns.getFirst() * WEIGHT5;
+			result -= halfBoardPawns.getSecond() * WEIGHT6;
 			
 			Position kingpos = tb.getKingPosition();
 			result += state.getTurnOf() == PlayerKind.WHITE 
