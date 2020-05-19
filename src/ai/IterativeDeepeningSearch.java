@@ -9,6 +9,7 @@ import domain.Move;
 import domain.Pair;
 import domain.Position;
 import domain.State;
+import domain.TablutBoard;
 import enums.GameState;
 import enums.PlayerKind;
 
@@ -33,8 +34,6 @@ public class IterativeDeepeningSearch implements ResearchAlgorithm {
 		this.maxDepth = maxDepth;
 		this.limit = limit;
 		h = new HeuristicTablut();
-		mapMoves = new TreeMap<Integer, Move>();
-		tempMoves = new TreeMap<Integer, Move>();
 	}
 	
 	@Override
@@ -43,8 +42,14 @@ public class IterativeDeepeningSearch implements ResearchAlgorithm {
 			mapMoves = new TreeMap<Integer, Move>(Collections.reverseOrder());
 			tempMoves = new TreeMap<Integer, Move>(Collections.reverseOrder());
 		}
+		else
+		{
+			mapMoves = new TreeMap<Integer, Move>();
+			tempMoves = new TreeMap<Integer, Move>();
+		}
 		
 		Collection<Move> possibleMoves = newState.getPossibleMoves();
+		
 		now = System.currentTimeMillis();
 		for (int currentDepth = minDepth; currentDepth <= maxDepth && !limit.apply(new Pair<Long, Long>(System.currentTimeMillis(), now)); currentDepth+=2) {
 			currentMaxDepth = currentDepth;
@@ -55,18 +60,21 @@ public class IterativeDeepeningSearch implements ResearchAlgorithm {
 			else if(newState.getTurnOf().equals(PlayerKind.BLACK)) {	//MIN player
 				MinValue(currentDepth, Integer.MIN_VALUE, Integer.MAX_VALUE, newState, possibleMoves);
 			}
-			
+
 			if (!tempMoves.isEmpty())
 			{
 				mapMoves.putAll(tempMoves);
 			}
 			
 			currentBestMove = mapMoves.get(mapMoves.firstKey());
+			System.out.println("depth: " + currentMaxDepth 
+					+ " best V: " + mapMoves.firstKey() 
+					+ " worst V: " + mapMoves.lastKey()
+					+ " best Move: " + mapMoves.get(mapMoves.firstKey()).toString());
 		
 			possibleMoves = mapMoves.values();
 		}
 		System.out.println("depth reached: " + currentMaxDepth);
-		System.out.println("apply done: " + newState.applyDone + " undo done: " + newState.undoDone);
 		
 		return currentBestMove;
 	}
@@ -74,26 +82,26 @@ public class IterativeDeepeningSearch implements ResearchAlgorithm {
 	private int MaxValue(int depth, int alpha, int beta, State state, Collection<Move> firstLevelMoves) {
 		//all'interuzione si ritorna un valore 
 		if (cutoff(depth, state)) {
-			//System.out.println("[MAX] CUTOFF" );
 			return h.getStateValue(state) - depth;
 		}
 		Integer v = null;
 		
 		v = Integer.MIN_VALUE;
-		
-		//System.out.println("[MAX] Depth: " + depth );
-		//System.out.println("[MAX] Alpha: " + alpha );
-		//System.out.println("[MAX] Beta: " + beta );
-		
+				
 		Collection<Move> moves = depth == currentMaxDepth ? firstLevelMoves : state.getPossibleMoves(PlayerKind.WHITE);
-		//System.out.println("[MAX] Possible Moves: " + moves.size() );
+		TablutBoard tb = (TablutBoard)state.getBoard();
+		
 		for (Move m : moves) {
 			Integer tmp = null;
+			
+			if (tb.getBlackPawnsInCentralCitadels().containsKey(m.getStarting()))
+			{
+				System.out.println("Checking black move " + m.toString());
+			}
+			
 			Position[] eaten = state.applyMove(m);
 			
-//			if ((tmp = TranspositionTable.getInstance().getValue(state.toString(), depth)) == null) {
-				tmp = MinValue(depth - 1, alpha, beta, state, null);
-//			}
+			tmp = MinValue(depth - 1, alpha, beta, state, null);
 			
 			state.undoMove(m, eaten);
 			
@@ -109,18 +117,11 @@ public class IterativeDeepeningSearch implements ResearchAlgorithm {
 
 			v = Math.max(v, tmp);
 			if (v >= beta) {
-				//System.out.println("[MAX] Return Value: " + v );
-				//System.out.println("[MAX] Time elapsed: " + (System.currentTimeMillis() - now) );
-//				TranspositionTable.getInstance().add(state.toString(), depth, v);
 				return v;
 			}
 
 			alpha = Math.max(alpha, v);
 		}
-		
-		//System.out.println("[MAX] Return Value: " + v );
-		//System.out.println("[MAX] Time elapsed: " + (System.currentTimeMillis() - now) );
-//		TranspositionTable.getInstance().add(state.toString(), depth, v);
 
 		return v;
 	
@@ -130,24 +131,14 @@ public class IterativeDeepeningSearch implements ResearchAlgorithm {
 	private int MinValue(int depth, int alpha, int beta, State state, Collection<Move> firstLevelMoves) {
 		//all'interuzione si ritorna un valore 
 		if (cutoff(depth, state)) {
-			//System.out.println("[MIN] CUTOFF" );
 			return h.getStateValue(state) + depth;
 		}
-		int v = Integer.MAX_VALUE;
-
-		//System.out.println("[MIN] Depth: " + depth );
-		//System.out.println("[MIN] Alpha: " + alpha );
-		//System.out.println("[MIN] Beta: " + beta );
-		
+		int v = Integer.MAX_VALUE;		
 		Collection<Move> moves = depth == currentMaxDepth ? firstLevelMoves : state.getPossibleMoves(PlayerKind.BLACK);
-		
-		//System.out.println("[MIN] Possible Moves: " + moves.size() );
 		for (Move m : moves) {											
 			Integer tmp = null;
 			Position[] eaten = state.applyMove(m);
-//			if ((tmp = TranspositionTable.getInstance().getValue(state.toString(), depth)) == null) {		
-				tmp=MaxValue(depth - 1, alpha, beta, state, null);
-//			} 
+			tmp=MaxValue(depth - 1, alpha, beta, state, null); 
 			
 			state.undoMove(m, eaten);
 			
@@ -156,21 +147,14 @@ public class IterativeDeepeningSearch implements ResearchAlgorithm {
 					this.mapMoves.put(tmp, m);	
 				else
 					this.tempMoves.put(tmp, m);	
-				//ci si salva in mappa le coppie <valore, mossa> del primo livello di profondità
 			}
 			
 			v = Math.min(v,tmp);
 			if (v <= alpha) {
-				//System.out.println("[MIN] Return Value: " + v );
-				//System.out.println("[MIN] Time elapsed: " + (System.currentTimeMillis() - now) );
-//				TranspositionTable.getInstance().add(state.toString(), depth, v);
 				return v;
 			}
 			beta = Math.min(beta, v);
 		}
-		//System.out.println("[MIN] Return Value: " + v );
-		//System.out.println("[MIN] Time elapsed: " + (System.currentTimeMillis() - now) );
-//		TranspositionTable.getInstance().add(state.toString(), depth, v);
 		return v;
 
 	}

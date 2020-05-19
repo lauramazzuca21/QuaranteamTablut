@@ -21,19 +21,10 @@ public class TablutGame extends Game {
 		{
 			long now = System.currentTimeMillis();
 			Move nextMove = p.getNextMove(state);
-			System.out.println("[GAME LOOP] State after getNextMove before applyMove\n" + state.toString());
-			System.out.println(nextMove.toString());
-			Position[] pos = state.applyMove(nextMove);
-			
-			if (pos != null) {
-				for (int i = 0; i < pos.length; i++) {
-					if (pos[i] == null)
-						break;
-					System.out.println("[GAME LOOP] " + pos[i].toString());
-				}
-			}
-			
-			System.out.println("[GAME LOOP] turno "+p.getKind() + " time elapsed: " + (System.currentTimeMillis() - now));
+
+			state.applyMove(nextMove);
+
+			System.out.println("[GAME LOOP] turno "+ p.getKind() + " time elapsed: " + (System.currentTimeMillis() - now));
 
 			System.out.println(state.toString());
 
@@ -45,6 +36,8 @@ public class TablutGame extends Game {
 	}
 	
 	private boolean checkGameState() {
+		
+		System.out.println("[GAME LOOP] current GameState " + state.getGameState());
 		
 		if (state.getGameState() == GameState.WIN)
 		{
