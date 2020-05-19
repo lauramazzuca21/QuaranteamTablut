@@ -10,29 +10,18 @@ import enums.PlayerKind;
 
 public class HeuristicTablut implements HeuristicFunction{
 
-	/**
-	 * funzione euristica:
-	 * - alti valori per i bianchi
-	 * - bassi valori per i neri
-	 *
-	 * @param state
-	 * stato da valutare
-	 * @return un valore di stima dello stato
-	 */
-
-	//da adattare una volta finalizzato PVS
 	private static final int WEIGTH1 = 500;
-	private static final int WEIGTH2 = 1000;
+	private static final int WEIGTH2 = 800;
 	private static final int WEIGTH3 = 40;
-	private static final int WEIGTH4 = 20;
-	private static final int WEIGTH5 = 1;
-	private static final int WEIGTH6 = 1;
+	private static final int WEIGTH4 = 60;
+	private static final int WEIGTH5 = 20;
+	private static final int WEIGTH6 = 40;
 	private static final int[][] position_weight = {
 	        {   0, 1000, 1000,   0,    0,   0, 1000, 1000,    0},
 	        {1000,  300,  200, 100,    0, 100,  200,  300, 1000},
 	        {1000,  200,  200, 200,  200, 200,  200,  200, 1000},
 	        {   0,  100,  200,   0,    0,   0,  200,  100,    0},
-	        {   0,    0,  200,   0,-1000,   0,  200,    0,    0},
+	        {   0,    0,  200,   0,-100,   0,  200,    0,    0},
 	        {   0,  100,  200,   0,    0,   0,  200,  100,    0},
 	        {1000,  300,  200, 200,  200, 200,  200,  300, 1000},
 	        {1000,  100,  200, 100,    0, 100,  200,  100, 1000},
@@ -62,7 +51,13 @@ public class HeuristicTablut implements HeuristicFunction{
 			if (tb.isKingReadyToWin())
 				result = result + WEIGTH1;
 			else {
-				result -= tb.pawnsBlockingKingVictory() * WEIGTH4;
+				Pair<Integer, Integer> pawns = tb.pawnsBlockingKingVictory();
+				if (pawns != null)
+				{
+//					result -= (pawns.getFirst()+pawns.getSecond()) * WEIGTH4;
+					result -= pawns.getFirst() * WEIGTH5;
+					result -= pawns.getSecond() * WEIGTH4;
+				}
 			}
 				
 			if (tb.isKingInDanger())
