@@ -1,7 +1,9 @@
-package aiMCTS;
+package ai.MCTS;
 
 import java.util.Collections;
 import java.util.Comparator;
+
+import domain.Node;
 
 public class UCT {
 	

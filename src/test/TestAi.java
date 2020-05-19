@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import ai.HeuristicTablut;
 import ai.IterativeDeepeningSearch;
 import ai.ResearchAlphaBeta;
-import aiMCTS.MCTSearch;
+import ai.MCTS.MCTSearch;
 import domain.*;
 import enums.GameState;
 import enums.PlayerKind;

@@ -1,4 +1,4 @@
-package aiMCTS;
+package domain;
 
 
 public class Tree {
