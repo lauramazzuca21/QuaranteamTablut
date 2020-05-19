@@ -1,23 +1,35 @@
 package domain;
 
 import enums.PlayerKind;
-import ai.HeuristicTablut;
-import ai.ResearchAlphaBeta;
-import ai.ResearchPVS;
+import ai.ResearchAlgorithm;
 
 public class AiPlayer extends Player {
 
-	ResearchAlphaBeta ab = new ResearchAlphaBeta();
-	ResearchPVS pvs = new ResearchPVS();
+	private int turn;
+	private ResearchAlgorithm researchInitial;
+	private ResearchAlgorithm research;
 	
-	public AiPlayer(String id, PlayerKind kind) {
+	public ResearchAlgorithm getResearch() {
+		return research;
+	}
+	
+	public AiPlayer(String id, PlayerKind kind, ResearchAlgorithm researchInitial, ResearchAlgorithm research) {
 		super(id, kind);
+		turn = 0;
+		this.research = research;
+		this.researchInitial = researchInitial;
 	}
 
 	@Override
-	public Move getNextMove(State newState) {	
-		return ab.AlphaBetaSearch(new HeuristicTablut(), 5, newState);
-//		return pvs.pvSearch(newState, Integer.MAX_VALUE, Integer.MIN_VALUE, 3);
+	public Move getNextMove(State newState) {
+		System.gc();
+
+		if (turn < 4 && researchInitial != null)
+		{	
+			turn++;
+			return this.researchInitial.getNextMove(newState);
+		}
+		return this.research.getNextMove(newState);
 	}
 
 }

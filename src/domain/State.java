@@ -11,7 +11,7 @@ public abstract class State implements Cloneable {
 
 	private PlayerKind turnOf;
 	private GameState currentState;
-
+	
 	public State(Board board, PlayerKind startingPlayer) {
 		this.board = board;
 		turnOf = startingPlayer;
@@ -48,26 +48,11 @@ public abstract class State implements Cloneable {
 	
 	public abstract boolean hasWon(PlayerKind playerKind);
 
-	public abstract void applyMove(Move nextMove);
-	public abstract void undoMove(Move nextMove);
+	public abstract Position[] applyMove(Move nextMove);
 
 	public abstract List<Move> getPossibleMoves();
 	public abstract List<Move> getPossibleMoves(PlayerKind playerKind);
-	
-	@Override
-	protected State clone() {
-		State newState = null;
-		
-		try {
-			newState = (State) super.clone();
-			newState.setBoard((Board) this.getBoard().clone());
 
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
-		}
-		
-		return newState;
-	}
-
+	public abstract void undoMove(Move nextMove, Position[] eaten) ;
 	
 }
