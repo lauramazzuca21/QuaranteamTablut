@@ -5,7 +5,7 @@ import java.util.List;
 import enums.GameState;
 import enums.PlayerKind;
 
-public abstract class State implements Cloneable {
+public abstract class State implements Cloneable, JsonSerializable {
 
 	private Board board;
 

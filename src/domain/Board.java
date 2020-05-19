@@ -4,7 +4,7 @@ import java.util.Arrays;
 import enums.Pawn;
 import enums.Tile;
 
-public abstract class Board implements Cloneable {
+public abstract class Board implements Cloneable, JsonSerializable{
 	
 	private Pawn[][] pawnBoard;
 	private Tile[][] tileBoard;
@@ -119,4 +119,7 @@ public abstract class Board implements Cloneable {
 
 	public abstract int getPawnCount(Pawn pawnType);
 	public abstract void undoMove(Move m, Position[] eaten);
+	
+	
+	
 }

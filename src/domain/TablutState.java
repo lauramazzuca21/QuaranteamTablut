@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import enums.GameState;
 import enums.Pawn;
 import enums.PlayerKind;
@@ -255,5 +258,49 @@ public class TablutState extends State {
 		this.setTurnOf(getTurnOf() == PlayerKind.WHITE ? PlayerKind.BLACK : PlayerKind.WHITE);
 		setCurrentBoard();
 			
+	}
+
+	@Override
+	public String toJson() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public void fromJson(String jsonString) {
+		// 		EMPTY("O"), WHITE("W"), BLACK("B"), THRONE("T"), KING("K");
+		JsonObject obj = new JsonParser().parse(jsonString).getAsJsonObject();
+		switch(obj.get("turn").toString()) {
+			case "W": {
+				this.setTurnOf(PlayerKind.WHITE);
+			}
+			case "B": {
+				this.setTurnOf(PlayerKind.BLACK);
+			}
+			case "BW": {
+				if (getTurnOf()==PlayerKind.WHITE)
+					this.setGameState(GameState.LOSE);
+				if (getTurnOf()==PlayerKind.BLACK)
+					this.setGameState(GameState.WIN);
+			}
+			case "WW": {
+				if (getTurnOf()==PlayerKind.WHITE)
+					this.setGameState(GameState.WIN);
+				if (getTurnOf()==PlayerKind.BLACK)
+					this.setGameState(GameState.LOSE);
+			}			
+			case "D": {
+				this.setGameState(GameState.DRAW);
+			}
+		
+		}
+		this.getBoard().fromJson(obj);
+	}
+
+	@Override
+	public void fromJson(JsonObject jsonObj) {
+		// TODO Auto-generated method stub
+		
 	}
 }
