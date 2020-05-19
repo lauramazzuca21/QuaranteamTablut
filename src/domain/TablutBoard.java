@@ -143,21 +143,7 @@ public class TablutBoard extends Board {
 		return null;
 	}
 	
-	public boolean isKingCaptured() {
-		int kingSurrounded = countKingSurrounded();
-		if ( (getTile(kingPosition) == Tile.CASTLE && kingSurrounded == 4)
-				|| (isKingAdiacentToCastle() && kingSurrounded == 3)
-				|| surroundedOnX(kingPosition) 
-				|| surroundedOnY(kingPosition)
-				|| surroundedAdiacentToCitadel(kingPosition))
-		{
-			return true;
-		}
-		
-		return false;
-	}
-	
-	private boolean surroundedAdiacentToCitadel(Position position) {
+	public boolean surroundedAdiacentToCitadel(Position position) {
 		Position[] neighborsH = position.getHorizontalNeighbors(DIM, DIM);
 		Position[] neighborsV = position.getVerticalNeighbors(DIM, DIM);
 		
@@ -167,7 +153,7 @@ public class TablutBoard extends Board {
 				|| (getPawn(neighborsV[1]) == Pawn.BLACK && getTile(neighborsV[0]) == Tile.CAMP);
 	}
 	
-	private boolean surroundedOnX(Position position) {
+	public boolean surroundedOnX(Position position) {
 		Pawn type = getPawn(position);
 		int surround = 0;
 		for (Position p : position.getHorizontalNeighbors(DIM, DIM))
@@ -182,7 +168,7 @@ public class TablutBoard extends Board {
 		return surround == 2;
 	}
 	
-	private boolean surroundedOnY(Position position) {
+	public boolean surroundedOnY(Position position) {
 		Pawn type = getPawn(position);
 		int surround = 0;
 		for (Position p : position.getVerticalNeighbors(DIM, DIM))
@@ -219,7 +205,7 @@ public class TablutBoard extends Board {
 		return result;
 	}
 	
-	private boolean isKingAdiacentToCastle() {
+	public boolean isKingAdiacentToCastle() {
 		for(Position p : kingPosition.getOrthogonalNeighbors(DIM, DIM))
 		{
 			if (getTile(p) == Tile.CASTLE)
@@ -242,7 +228,8 @@ public class TablutBoard extends Board {
 				&& (getPawn(endingPosition.getNextPositionX(DIM).getNextPositionX(DIM)) == Pawn.WHITE
 					|| (getTile(endingPosition.getNextPositionX(DIM).getNextPositionX(DIM)) == Tile.CAMP
 						&& getTile(endingPosition.getNextPositionX(DIM)) == Tile.EMPTY)
-					|| getPawn(endingPosition.getNextPositionX(DIM).getNextPositionX(DIM)) == Pawn.KING) )
+					|| getPawn(endingPosition.getNextPositionX(DIM).getNextPositionX(DIM)) == Pawn.KING
+					|| getTile(endingPosition.getNextPositionX(DIM).getNextPositionX(DIM)) == Tile.CASTLE) )
 		{
 			eatenPawns[idx] = endingPosition.getNextPositionX(DIM);
 			idx++;
@@ -252,7 +239,8 @@ public class TablutBoard extends Board {
 				&& (getPawn(endingPosition.getPreviousPositionX().getPreviousPositionX()) == Pawn.WHITE
 				|| (getTile(endingPosition.getPreviousPositionX().getPreviousPositionX()) == Tile.CAMP
 						&& getTile(endingPosition.getPreviousPositionX()) == Tile.EMPTY)
-				|| getPawn(endingPosition.getPreviousPositionX().getPreviousPositionX()) == Pawn.KING) )
+				|| getPawn(endingPosition.getPreviousPositionX().getPreviousPositionX()) == Pawn.KING
+				|| getTile(endingPosition.getPreviousPositionX().getPreviousPositionX()) == Tile.CASTLE) )
 		{
 			eatenPawns[idx] = endingPosition.getPreviousPositionX();
 			idx++;
@@ -262,7 +250,8 @@ public class TablutBoard extends Board {
 				&& (getPawn(endingPosition.getNextPositionY(DIM).getNextPositionY(DIM)) == Pawn.WHITE 
 					|| (getTile(endingPosition.getNextPositionY(DIM).getNextPositionY(DIM)) == Tile.CAMP
 						&& getTile(endingPosition.getNextPositionY(DIM)) == Tile.EMPTY)
-				|| getPawn(endingPosition.getNextPositionY(DIM).getNextPositionY(DIM)) == Pawn.KING) )
+				|| getPawn(endingPosition.getNextPositionY(DIM).getNextPositionY(DIM)) == Pawn.KING
+				|| getTile(endingPosition.getNextPositionY(DIM).getNextPositionY(DIM)) == Tile.CASTLE) )
 		{
 			eatenPawns[idx] = endingPosition.getNextPositionY(DIM);
 			idx++;
@@ -272,7 +261,8 @@ public class TablutBoard extends Board {
 				&& (getPawn(endingPosition.getPreviousPositionY().getPreviousPositionY()) == Pawn.WHITE 
 						|| (getTile(endingPosition.getPreviousPositionY().getPreviousPositionY()) == Tile.CAMP
 						&& getTile(endingPosition.getPreviousPositionY()) == Tile.EMPTY)
-				|| getPawn(endingPosition.getPreviousPositionY().getPreviousPositionY()) == Pawn.KING) )
+				|| getPawn(endingPosition.getPreviousPositionY().getPreviousPositionY()) == Pawn.KING
+				|| getTile(endingPosition.getPreviousPositionY().getPreviousPositionY()) == Tile.CASTLE) )
 		{
 			eatenPawns[idx] = endingPosition.getPreviousPositionY();
 			idx++;
@@ -288,7 +278,7 @@ public class TablutBoard extends Board {
 
 		int idx = 0;
 		
-		if (getPawn(endingPosition.getNextPositionX(DIM)) == Pawn.WHITE 
+		if ( getPawn(endingPosition.getNextPositionX(DIM)) == Pawn.WHITE 
 				&& (getPawn(endingPosition.getNextPositionX(DIM).getNextPositionX(DIM)) == Pawn.BLACK 
 						|| (getTile(endingPosition.getNextPositionX(DIM).getNextPositionX(DIM)) == Tile.CAMP
 						&& getTile(endingPosition.getNextPositionX(DIM)) == Tile.EMPTY)
@@ -472,14 +462,15 @@ public class TablutBoard extends Board {
 		return false;
 	}
 	
-	public int pawnsBlockingKingVictory() {
+	public Pair<Integer, Integer> pawnsBlockingKingVictory() {
 		int kingY = kingPosition.getY();
 		int kingX = kingPosition.getX();
 		
 		if ( kingX < 5 && kingX > 3 && kingY < 5 && kingY > 3 )
-			return 0; //because the camps are the ones blocking its path
+			return null; //because the camps are the ones blocking its path
 		
-		int blockingVictory = 0;
+		int blacks = 0;
+		int whites = 0;
 		
 		//controllo mosse possibili in un unico ciclo
 		for (int prevX = kingX-1, prevY = kingY-1, postX = kingX+1, postY = kingY+1;
@@ -488,18 +479,21 @@ public class TablutBoard extends Board {
 		{
 			//if king is on Y=7 the citadel blocks previous Xs
 			if (prevX >= 0 && kingY != 7 && !getPawn(prevX, kingY).equals(Pawn.EMPTY)) 
-				blockingVictory++;
+				if (getPawn(prevX, kingY) == Pawn.BLACK) blacks++;
+				else whites++;
 			if (postX < DIM &&  kingY != 1 && !getPawn(postX, kingY).equals(Pawn.EMPTY)) 
-				blockingVictory++;
+				if (getPawn(postX, kingY) == Pawn.BLACK) blacks++;
+				else whites++;
 			if (prevY >= 0 && kingX != 7 && !getPawn(kingX, prevY).equals(Pawn.EMPTY))
-				blockingVictory++;
+				if (getPawn(kingX, prevY) == Pawn.BLACK) blacks++;
+				else whites++;
 			if (postY < DIM && kingX != 1 && !getPawn(kingX, postY).equals(Pawn.EMPTY)) 
-				blockingVictory++;
-
+				if (getPawn(kingX, postY) == Pawn.BLACK) blacks++;
+				else whites++;
 
 		}
 		
-		return blockingVictory;
+		return new Pair<Integer, Integer>(whites, blacks);
 	}
 	
 }

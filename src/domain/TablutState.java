@@ -187,7 +187,7 @@ public class TablutState extends State {
 
 	private void updateGameState() {
 		TablutBoard tb = (TablutBoard) getBoard();
-		boolean kingCaptured = tb.isKingCaptured();
+		boolean kingCaptured = isKingCaptured();
 		boolean kingEscaped = tb.isKingOnEscapeTile();
 		
 		if ( (kingCaptured && this.getTurnOf() == PlayerKind.BLACK)
@@ -206,6 +206,24 @@ public class TablutState extends State {
 			this.setGameState(GameState.DRAW);
 		}
 			
+	}
+	
+	
+	private boolean isKingCaptured() {
+		TablutBoard tb = (TablutBoard) getBoard();
+		int kingSurrounded = tb.countKingSurrounded();
+		if ( (tb.getTile(tb.getKingPosition()) == Tile.CASTLE && kingSurrounded == 4)
+				|| (tb.isKingAdiacentToCastle() && kingSurrounded == 3)
+				|| (	this.getTurnOf() == PlayerKind.BLACK 
+						&& ( tb.surroundedOnX(tb.getKingPosition()) 
+							|| tb.surroundedOnY(tb.getKingPosition())
+							|| tb.surroundedAdiacentToCitadel(tb.getKingPosition()) )	) 
+				)
+		{
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Override
