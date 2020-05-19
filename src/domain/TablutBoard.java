@@ -361,26 +361,26 @@ public class TablutBoard extends Board {
 		
 	}
 	
-    public Pair<Integer, Integer> getKingQuadrantPieces() {
+    public Pair<Integer, Integer> getKingHalfBoardPawns() {
 
-        int whitePawnsOnflow = 0;
-        int blackPawnsOnFlow = 0;
+        int whitePawns = 0;
+        int blackPawns = 0;
         
         if (getKingPosition().getX() < 4) {
             for (int i = 0; i < 4; i++)
                 for (int j = 0; j < 9; j++) {
                     if (getPawn(i, j).equals(Pawn.WHITE))
-                        whitePawnsOnflow++;
+                        whitePawns++;
                     else if (getPawn(i, j).equals(Pawn.BLACK))
-                        blackPawnsOnFlow++;
+                        blackPawns++;
                 }
         } else if (getKingPosition().getX() > 4) {
             for (int i = 5; i < 9; i++)
                 for (int j = 0; j < 9; j++) {
                     if (getPawn(i, j).equals(Pawn.WHITE))
-                        whitePawnsOnflow++;
+                        whitePawns++;
                     else if (getPawn(i, j).equals(Pawn.BLACK))
-                        blackPawnsOnFlow++;
+                        blackPawns++;
                 }
 
         }
@@ -388,21 +388,21 @@ public class TablutBoard extends Board {
             for (int i = 0; i < 9; i++)
                 for (int j = 0; j < 4; j++) {
                     if (getPawn(i, j).equals(Pawn.WHITE))
-                        whitePawnsOnflow++;
+                        whitePawns++;
                     else if (getPawn(i, j).equals(Pawn.BLACK))
-                        blackPawnsOnFlow++;
+                        blackPawns++;
                 }
         } else if (getKingPosition().getY() > 4) {
             for (int i = 0; i < 9; i++)
                 for (int j = 5; j < 9; j++) {
                     if (getPawn(i, j).equals(Pawn.WHITE))
-                        whitePawnsOnflow++;
+                        whitePawns++;
                     else if (getPawn(i, j).equals(Pawn.BLACK))
-                        blackPawnsOnFlow++;
+                        blackPawns++;
                 }
 
         }
-        return new Pair<Integer, Integer>(whitePawnsOnflow, blackPawnsOnFlow);
+        return new Pair<Integer, Integer>(whitePawns, blackPawns);
     }	
 	
 	public boolean isKingInDanger() {
