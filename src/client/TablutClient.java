@@ -41,7 +41,7 @@ public class TablutClient extends Client implements Runnable {
 		this.ip = ip;
 			
 		try {
-			playerSocket = new Socket(InetAddress.getLocalHost(), MY_PORT);
+			playerSocket = new Socket(InetAddress.getLocalHost(), role == PlayerKind.WHITE ? WHITEPORT : BLACKPORT);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -79,7 +79,7 @@ public class TablutClient extends Client implements Runnable {
 		
 		while(true) {
 			try {
-				state = readState(in);
+				state.fromJson(readState(in)); 
 			} catch (ClassNotFoundException | IOException e) {
 				e.printStackTrace();
 			}
@@ -116,11 +116,9 @@ public class TablutClient extends Client implements Runnable {
 
 	
 	
-	public State readState(DataInputStream in) throws ClassNotFoundException, IOException {
+	public String readState(DataInputStream in) throws ClassNotFoundException, IOException {
 		String inputString = StreamUtils.readString(in);
-		gson = new Gson();
-		State myState = gson.fromJson(inputString, State.class);
-		return myState;
+		return inputString;
 	}
 
 

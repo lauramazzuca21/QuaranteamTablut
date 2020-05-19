@@ -23,10 +23,10 @@ public class TheQuaranteamMain {
 			System.exit(-1);
 		}
 		
-		if (args[0].toLowerCase() == "white") {
+		if (args[0].toLowerCase().equals("white") ) {
 			role = PlayerKind.WHITE;
 		}
-		else if (args[0].toLowerCase() == "black") {
+		else if (args[0].toLowerCase().equals("black") ) {
 			role = PlayerKind.BLACK;
 		}
 		else {
