@@ -6,12 +6,11 @@ import java.util.function.Function;
 
 import org.junit.jupiter.api.Test;
 
-import ai.HeuristicTablut;
 import ai.IterativeDeepeningSearch;
-import ai.ResearchAlphaBeta;
 import aiMCTS.MCTSearch;
 import domain.*;
 import enums.GameState;
+import enums.Pawn;
 import enums.PlayerKind;
 
 class TestAi {
@@ -137,7 +136,7 @@ class TestAi {
 		};
 		
 		players.add(new AiPlayer("TheQuaranteam", PlayerKind.WHITE, null, new IterativeDeepeningSearch(3, 11, f)));
-		players.add(new AiPlayer("Adversary", PlayerKind.BLACK, null, new IterativeDeepeningSearch(3, 11, f)));
+		players.add(new AiPlayer("Adversary", PlayerKind.BLACK, null, new MCTSearch()));
 		
 		int ww = 0, bw = 0, d = 0;
 		for (int i = 0; i < 10; i++) {
@@ -146,11 +145,14 @@ class TestAi {
 			while (game.getState().getGameState() == GameState.PLAYING)	
 			{
 				game.loop();
+				System.out.println("W remaining: "+game.getState().getBoard().getPawnCount(Pawn.WHITE));
+				System.out.println("B remaining: "+game.getState().getBoard().getPawnCount(Pawn.BLACK));
 			}
 			
 			if (game.getState().hasWon(PlayerKind.WHITE)) ww++;
 			else if (game.getState().hasWon(PlayerKind.BLACK)) bw++;
 			else d++;
+
 		}
 		
 		System.out.println("WHITE won: " + ww);

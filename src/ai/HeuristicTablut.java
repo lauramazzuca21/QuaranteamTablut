@@ -56,7 +56,7 @@ public class HeuristicTablut implements HeuristicFunction{
 			result = -10000;
 		}
 		else if (state.getGameState() == GameState.DRAW)
-			result = 5000;
+			result = 1000;
 		else {
 			if (tb.isKingReadyToWin())
 				result = result + WEIGTH1;
@@ -67,26 +67,17 @@ public class HeuristicTablut implements HeuristicFunction{
 			// valutazioni sul numero di pezzi
 			result = result + (tb.getPawnCount(Pawn.WHITE) * WEIGTH3);
 			result = result - (tb.getPawnCount(Pawn.BLACK) * WEIGTH4);
-//
-//	
-//			if (tb.isKingInDanger())
-//				result = result - WEIGTH2;
-//			
-//			// valutazioni sul numero di pezzi
-//			result = result + (state.getBoard().getPawnCount(Pawn.WHITE)*WEIGTH3);
-//			result = result - (state.getBoard().getPawnCount(Pawn.BLACK)*WEIGTH4);
-//			
-//			
-//			
-	//		//considerazioni sulle pedine nella zona del re
-			Pair<Integer, Integer> pawnsInFlow = tb.getKingQuadrantPieces();
-			result += pawnsInFlow.getFirst() * WEIGTH5;
-			result -= pawnsInFlow.getSecond() * WEIGTH6;
-	//		// considerazioni sulle pedine in diagonale rispetto al re
-	//		result += state.getPawnsOnKingDiagonal() * WEIGTH7;
-	//		result += state.getPawnsOnKingDiagonal2() * WEIGTH8;
-	//		return result;
-	//		return 0;
+			
+			
+//			//considerazioni sulle pedine nella zona del re
+//			Pair<Integer, Integer> pawnsInFlow = tb.getKingQuadrantPieces();
+//			result += pawnsInFlow.getFirst() * WEIGTH5;
+//			result -= pawnsInFlow.getSecond() * WEIGTH6;
+//			// considerazioni sulle pedine in diagonale rispetto al re
+//			result += state.getPawnsOnKingDiagonal() * WEIGTH7;
+//			result += state.getPawnsOnKingDiagonal2() * WEIGTH8;
+//			return result;
+//			return 0;
 			
 			
 			Position kingpos = tb.getKingPosition();
