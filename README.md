@@ -1,6 +1,6 @@
 # QuaranteamTablut
 
-This is an AI that plays Tablut (with Ashton rules) made to participate in the annual challenge for our University course "Foundations of Artificial Intelligence".  
+This is an AI that plays Tablut (with Ashton rules) made by [Nicholas Carroll](https://github.com/dropino) and [Laura Mazzuca](https://github.com/lauramazzuca21) to participate in the [annual challenge](http://ai.unibo.it/games/boardgamecompetition) for our University course "Foundations of Artificial Intelligence".  
 
 It runs using Iterative Deepening Alpha-Beta search by default.
 
@@ -12,5 +12,5 @@ Be sure to download the java jdk-14:
 `sudo apt update`  
 `sudo apt install openjdk-14-jdk -y`
 
-To execute the player just run the "TheQuaranteam.sh" or "runmyplayer.sh" script with usage:  
+To execute the player, run the "TheQuaranteam.sh" or "runmyplayer.sh" script with usage:  
 `<white | black> <turn duration in seconds> <server ip>`
