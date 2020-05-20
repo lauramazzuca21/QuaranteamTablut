@@ -9,6 +9,7 @@ public abstract class BoardLoader {
 	public abstract Pawn[][] getPawnBoardSetup();
 	public abstract Tile[][] getTileBoardSetup();
 
+	
 	public static BoardLoader BoardLoaderFactory(Loader loader, String source) {
 		switch (loader) {
 		case JSON:

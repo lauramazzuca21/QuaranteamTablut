@@ -4,15 +4,19 @@ import java.util.LinkedHashMap;
 
 import domain.Pair;
 
+/*
+ * a database that stores results of previously performed searches. 
+ * It is a way to greatly reduce the search space of a chess tree with little negative impact
+ */
+
+
 public class TranspositionTable extends LinkedHashMap<String, Pair<Integer, Integer>> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1507589712717292051L;
 	//in the Pair Key is the depth, Value is the Value associated to the configuration by ABP
 	private static TranspositionTable instance = null;
 	private static int MAX_DIM = 500000;
+	
 	
 	public static TranspositionTable getInstance() {
 		if (instance == null)
@@ -20,11 +24,13 @@ public class TranspositionTable extends LinkedHashMap<String, Pair<Integer, Inte
 		return instance;
 	}
 
+	
 	@Override
 	protected boolean removeEldestEntry(java.util.Map.Entry<String, Pair<Integer, Integer>> eldest) 
     { 
         return size() > MAX_DIM; 
     } 
+	
 	
 	public void add(String board, int depth, int value) {
 		
@@ -38,12 +44,13 @@ public class TranspositionTable extends LinkedHashMap<String, Pair<Integer, Inte
 		}
 	}
 
+	
 	public boolean contains(String board) {
 		return this.containsKey(board);
 	}
 
+	
 	public Integer getValue(String board, int depth) {
-		
 		if(this.containsKey(board))
 			return this.get(board).getFirst() > depth ? 
 					this.get(board).getSecond() 
@@ -51,6 +58,5 @@ public class TranspositionTable extends LinkedHashMap<String, Pair<Integer, Inte
 					;
 			
 		return null;
-	}
-	
+	}	
 }

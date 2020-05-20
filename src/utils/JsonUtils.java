@@ -10,9 +10,7 @@ import org.json.JSONTokener;
 
 public class JsonUtils {
 
-	
 	public static JSONObject getObjectFromFile(String fileName) {
-		
 		InputStream fileStream = null;
 		try {
 			fileStream = new FileInputStream(fileName);
@@ -23,7 +21,6 @@ public class JsonUtils {
 		JSONTokener tokener = new JSONTokener(fileStream);
         JSONObject object = new JSONObject(tokener);
  
-		
         return object;
 	}
 }

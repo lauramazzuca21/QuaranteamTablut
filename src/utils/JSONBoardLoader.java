@@ -11,11 +11,13 @@ public class JSONBoardLoader extends BoardLoader {
 	private JSONObject board;
 	private int dimX, dimY;
 	
+	
 	public JSONBoardLoader(String source) {
 		board = JsonUtils.getObjectFromFile(source);
 		dimX = board.getInt("TablutXDim");
 		dimY = board.getInt("TablutYDim");
 	}
+	
 	
 	@Override
 	public Pawn[][] getPawnBoardSetup() {
@@ -32,6 +34,7 @@ public class JSONBoardLoader extends BoardLoader {
 		return result;
 	}
 
+	
 	@Override
 	public Tile[][] getTileBoardSetup() {
 		Tile[][] result = new Tile[dimX][dimY];
@@ -46,6 +49,4 @@ public class JSONBoardLoader extends BoardLoader {
 		return result;
 	}
 	
-	
-
 }

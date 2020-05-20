@@ -23,6 +23,7 @@ import java.nio.charset.StandardCharsets;
  * converte il risultato in stringa.
  */
 public class StreamUtils {
+	
 	public static void writeString(DataOutputStream out, String s) throws IOException {
 		// Converti la stringa in un array di byte codificati con UTF-8
 		byte[] bytes = s.getBytes(StandardCharsets.UTF_8);
@@ -33,6 +34,7 @@ public class StreamUtils {
 		// Invio l'array di byte
 		out.write(bytes, 0, bytes.length);
 	}
+	
 	
 	public static String readString(DataInputStream in) throws IOException {
 		// Leggo la lunghezza dei byte in ingresso

@@ -5,6 +5,13 @@ import java.util.Comparator;
 
 import domain.Node;
 
+
+//Upper Confidence bounds applied to Trees
+
+//algorithm that deals with the flaw of Monte-Carlo Tree Search, 
+//when a program may favor a losing move with only one or a few forced refutations, 
+//but due to the vast majority of other moves provides a better random playout score than other, better moves
+
 public class UCT {
 	
 	public static double uctValue(
@@ -22,5 +29,5 @@ public class UCT {
           node.getChildArray(),
           Comparator.comparing(c -> uctValue(parentVisit, c.getWinScore(), c.getVisitNumber())));
     }
-
+	
 }
