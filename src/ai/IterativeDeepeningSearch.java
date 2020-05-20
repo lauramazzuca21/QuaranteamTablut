@@ -13,6 +13,12 @@ import domain.TablutBoard;
 import enums.GameState;
 import enums.PlayerKind;
 
+/*
+ * iterative deepening search is a state space/graph search strategy in which a 
+ * depth-limited version of depth-first search is run repeatedly with increasing 
+ * depth limits until the goal is found
+ */
+
 public class IterativeDeepeningSearch implements ResearchAlgorithm {
 
 	private int minDepth;
@@ -35,6 +41,7 @@ public class IterativeDeepeningSearch implements ResearchAlgorithm {
 		this.limit = limit;
 		h = new HeuristicTablut();
 	}
+	
 	
 	@Override
 	public Move getNextMove(State newState) {
@@ -79,6 +86,7 @@ public class IterativeDeepeningSearch implements ResearchAlgorithm {
 		return currentBestMove;
 	}
 	
+	
 	private int MaxValue(int depth, int alpha, int beta, State state, Collection<Move> firstLevelMoves) {
 		//all'interuzione si ritorna un valore 
 		if (cutoff(depth, state)) {
@@ -114,7 +122,6 @@ public class IterativeDeepeningSearch implements ResearchAlgorithm {
 				//ci si salva in mappa le coppie <valore, mossa> del primo livello di profondità
 			}
 
-
 			v = Math.max(v, tmp);
 			if (v >= beta) {
 				return v;
@@ -124,10 +131,10 @@ public class IterativeDeepeningSearch implements ResearchAlgorithm {
 		}
 
 		return v;
-	
 
 	}
 
+	
 	private int MinValue(int depth, int alpha, int beta, State state, Collection<Move> firstLevelMoves) {
 		//all'interuzione si ritorna un valore 
 		if (cutoff(depth, state)) {
@@ -159,6 +166,7 @@ public class IterativeDeepeningSearch implements ResearchAlgorithm {
 
 	}
 	
+	
 	private boolean cutoff(int depth, State state) {
 		//ci si blocca quando si raggiunge una certa profondità o si è in un nodo
 		//foglia -> quindi si è determinato una vittoria o sconfitta o pareggio
@@ -167,5 +175,4 @@ public class IterativeDeepeningSearch implements ResearchAlgorithm {
 					|| limit.apply(new Pair<Long, Long>(System.currentTimeMillis(), now))
 					;
 		}
-
 }

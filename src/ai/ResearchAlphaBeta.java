@@ -10,12 +10,12 @@ import domain.State;
 import enums.GameState;
 import enums.PlayerKind;
 
-public class ResearchAlphaBeta implements ResearchAlgorithm{
-
-		
+public class ResearchAlphaBeta implements ResearchAlgorithm{	
+	
 	private Map<Integer, Move> mapMoves;
 	private int maxDepth;
 	private HeuristicFunction h;
+	
 	
 	public ResearchAlphaBeta(int maxDepth, HeuristicFunction h) {
 		this.h = h;
@@ -23,19 +23,21 @@ public class ResearchAlphaBeta implements ResearchAlgorithm{
 		this.maxDepth = maxDepth;
 	}
 
+	
 	@Override
 	public Move getNextMove(State newState) {
 //		TranspositionTable.getInstance().clear();
 		if(newState.getTurnOf().equals(PlayerKind.WHITE)) {	//MAX player
 			int v = MaxValue(maxDepth, Integer.MIN_VALUE, Integer.MAX_VALUE, newState);
-			return mapMoves.get(v);	//si recupera l'azione con il valore v più alto
+			return mapMoves.get(v);	//si recupera l'azione con il valore v pi� alto
 		}
 		else if(newState.getTurnOf().equals(PlayerKind.BLACK)) {	//MIN player
 			int v = MinValue(maxDepth, Integer.MIN_VALUE, Integer.MAX_VALUE, newState);
-			return mapMoves.get(v);	//si recupera l'azione con il valore v più basso
+			return mapMoves.get(v);	//si recupera l'azione con il valore v pi� basso
 		}			
 			return null;
 	}
+	
 	
 	private int MaxValue(int depth, int alpha, int beta, State state) {
 		//all'interuzione si ritorna un valore 
@@ -69,7 +71,6 @@ public class ResearchAlphaBeta implements ResearchAlgorithm{
 				//ci si salva in mappa le coppie <valore, mossa> del primo livello di profondità
 			}
 
-
 			v = Math.max(v, tmp);
 			if (v >= beta) {
 				//System.out.println("[MAX] Return Value: " + v );
@@ -86,10 +87,9 @@ public class ResearchAlphaBeta implements ResearchAlgorithm{
 //		TranspositionTable.getInstance().add(state.toString(), depth, v);
 
 		return v;
-	
-
 	}
 
+	
 	private int MinValue(int depth, int alpha, int beta, State state) {
 		//all'interuzione si ritorna un valore 
 		if (cutoff(depth, state)) {
@@ -132,8 +132,8 @@ public class ResearchAlphaBeta implements ResearchAlgorithm{
 		//System.out.println("[MIN] Time elapsed: " + (System.currentTimeMillis() - now) );
 //		TranspositionTable.getInstance().add(state.toString(), depth, v);
 		return v;
-
 	}
+	
 	
 	private boolean cutoff(int depth, State state) {
 		//ci si blocca quando si raggiunge una certa profondità o si è in un nodo

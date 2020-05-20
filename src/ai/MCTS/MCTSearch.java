@@ -13,14 +13,20 @@ import domain.Tree;
 import enums.GameState;
 import enums.PlayerKind;
 
+
+//Monte Carlo Tree Search
+//Best-First search algorithm based on random playouts
+
 public class MCTSearch  implements ResearchAlgorithm {
+	
    static final int WIN_SCORE = 100;
    static final int DRAW_SCORE = 10;
    static final int END_TIMER = 55000; //60 secondi
    int level;
    PlayerKind opponent;
- 
-	@Override
+
+   
+   @Override
 	public Move getNextMove(State newState) {
     	long start= System.currentTimeMillis();
         int count = 0;
@@ -31,7 +37,6 @@ public class MCTSearch  implements ResearchAlgorithm {
     	TablutMCTSState stateCopy = MCTSState.deepCopy();
 
         expandNode(tree.getRoot(), stateCopy);
-        
         
         while (System.currentTimeMillis() - start < END_TIMER) {
             //selects the most promising child of the root node so that we have to analize less 
@@ -55,7 +60,6 @@ public class MCTSearch  implements ResearchAlgorithm {
             stateCopy.undoMove(promisingNode.getUsedMove(), eaten);
             count++;
         }
- 
 
         Node winnerNode = tree.getRoot().getChildWithMaxScore();
         System.out.println("Loops: " + count + " Visited: " + winnerNode.getVisitNumber() + " WinScore: " + winnerNode.getWinScore());
@@ -72,6 +76,7 @@ public class MCTSearch  implements ResearchAlgorithm {
         }
         return node;
     }
+    
     
     private void expandNode(Node node, TablutMCTSState state) {
         List<Move> possibleMoves = state.getPossibleMoves();
@@ -109,6 +114,7 @@ public class MCTSearch  implements ResearchAlgorithm {
         }    
     }
     
+    
     private void backPropogation(Node nodeToExplore, PlayerKind playerNo) {
         Node tempNode = nodeToExplore;
         while (tempNode != null) {
@@ -122,7 +128,5 @@ public class MCTSearch  implements ResearchAlgorithm {
             tempNode = tempNode.getParent();
         }
     }
-    
-   
     
 }
