@@ -6,10 +6,7 @@ import java.util.function.Function;
 
 import org.junit.jupiter.api.Test;
 
-import ai.HeuristicTablut;
 import ai.IterativeDeepeningSearch;
-import ai.ResearchAlphaBeta;
-import ai.MCTS.MCTSearch;
 import domain.*;
 import enums.GameState;
 import enums.PlayerKind;
@@ -141,7 +138,7 @@ class TestAi {
 //		players.add(new AiPlayer("Adversary", PlayerKind.BLACK, null, new MCTSearch()));
 
 		
-		int ww = 0, bw = 0, d = 0;
+//		int ww = 0, bw = 0, d = 0;
 //		for (int i = 0; i < 10; i++) {
 			Game game = new TablutGame(players);
 	
@@ -150,9 +147,9 @@ class TestAi {
 				game.loop();
 			}
 			
-			if (game.getState().hasWon(PlayerKind.WHITE)) ww++;
-			else if (game.getState().hasWon(PlayerKind.BLACK)) bw++;
-			else d++;
+//			if (game.getState().hasWon(PlayerKind.WHITE)) ww++;
+//			else if (game.getState().hasWon(PlayerKind.BLACK)) bw++;
+//			else d++;
 //		}
 		
 //		System.out.println("WHITE won: " + ww);

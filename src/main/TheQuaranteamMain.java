@@ -34,6 +34,7 @@ public class TheQuaranteamMain {
 			System.exit(-1);
 		}
 		
+		System.out.println("Selected player: " + role);
 		
 		if(Integer.parseInt(args[1]) > 0) {
 			timeOut = Integer.parseInt(args[1]);
@@ -42,12 +43,16 @@ public class TheQuaranteamMain {
 			System.out.println("Error in the parameters. Turn duration must be greater than 0 seconds");
 		}
 		
+		System.out.println("Selected timeout: " + timeOut);
+		
 		try {
 			serverIp = InetAddress.getByName(args[2]);
 		} catch (UnknownHostException e) {
 			System.out.println("problem in the ip address");
 			e.printStackTrace();
 		}
+		
+		System.out.println("Selected server IP: " + serverIp.toString());
 		
 		TablutClient client = new TablutClient(role, timeOut, serverIp);
 		client.run();
