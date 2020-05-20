@@ -79,7 +79,7 @@ public class TablutClient extends Client implements Runnable {
 				return true; 
 			else return false;
 		};		
-		this.state = new TablutState(new TablutBoard(Loader.JSON, "resources/board.json"));
+		this.state = new TablutState(new TablutBoard());
 		this.player = new AiPlayer("TheQuaranteam", role, null, new IterativeDeepeningSearch(3, 11, f));
 
 		
