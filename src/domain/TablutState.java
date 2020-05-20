@@ -227,37 +227,54 @@ public class TablutState extends State {
 	@Override
 	public void fromJson(String jsonString) {
 		// 		EMPTY("O"), WHITE("W"), BLACK("B"), THRONE("T"), KING("K");
+
 		JsonObject obj = new JsonParser().parse(jsonString).getAsJsonObject();
+		System.out.println("[TS] reading state: " + obj.get("turn").toString());
+
 		switch(obj.get("turn").toString()) {
-			case "W": {
+			case "\"WHITE\"": 
 				this.setTurnOf(PlayerKind.WHITE);
-			}
-			case "B": {
+				break;
+			case "\"BLACK\"": 
 				this.setTurnOf(PlayerKind.BLACK);
-			}
-			case "BW": {
+				break;
+			case "\"BLACKWIN\"": 
 				if (getTurnOf()==PlayerKind.WHITE)
 					this.setGameState(GameState.LOSE);
 				if (getTurnOf()==PlayerKind.BLACK)
 					this.setGameState(GameState.WIN);
-			}
-			case "WW": {
+				break;
+			case "\"WHITEWIN\"": 
 				if (getTurnOf()==PlayerKind.WHITE)
 					this.setGameState(GameState.WIN);
 				if (getTurnOf()==PlayerKind.BLACK)
 					this.setGameState(GameState.LOSE);
-			}			
-			case "D": {
+				break;			
+			case "\"DRAW\"": 
 				this.setGameState(GameState.DRAW);
-			}
+				break;
 		
 		}
+		
+		System.out.println("[TS] reading board...");
 		this.getBoard().fromJson(obj);
+		if (!currentBoard.equals(getBoard().toString()))
+		{
+			this.setCurrentBoard();
+			this.boardHistory.add(currentBoard);
+		}
+		System.out.println("[TS] DONE.");
 	}
 
 	@Override
 	public void fromJson(JsonObject jsonObj) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public JsonObject toJsonObject() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

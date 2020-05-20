@@ -518,30 +518,43 @@ public class TablutBoard extends Board {
 		int y = 0;
 		for (JsonElement jx : jarr){
 			JsonArray jArr2 = jx.getAsJsonArray();
+//			System.out.println("[TB] Analizing incoming board array " 
+//			+ x + ": " + jArr2.toString());
+			y = 0;
 			for(JsonElement jy : jArr2) {
+				//System.out.println("[TB] Pawn in " + x + ", " + y  + " before: " + getPawn(x, y));
 				switch(jy.toString()) {
 				//		EMPTY("O"), WHITE("W"), BLACK("B"), THRONE("T"), KING("K");
-					case "EMPTY": {
+					case "\"EMPTY\"": 
 						this.getPawnBoard()[x][y] = Pawn.EMPTY;
-					}
-					case "WHITE": {
+						break;
+					case "\"WHITE\"": 
 						this.getPawnBoard()[x][y] = Pawn.WHITE;
-					}
-					case "BLACK": {
+						break;
+					case "\"BLACK\"": 
 						this.getPawnBoard()[x][y] = Pawn.BLACK;
-					}
-					case "THRONE": {
+						break;
+					case "\"THRONE\"": 
 						this.getPawnBoard()[x][y] = Pawn.EMPTY;
-					}
-					case "KING": {
+						break;
+					case "\"KING\"":
 						this.getPawnBoard()[x][y] = Pawn.KING;
 						this.getKingPosition().setX(x);
 						this.getKingPosition().setY(y);
-					}
+						break;
+					default:
+						System.out.println("key " + jy.toString()+ " not found in board");
 				}
+//				System.out.println("[TB] Pawn in " + x + ", " + y  + " after: " + getPawn(x, y));
 				y++;
 			}
 			x++;
 		}
+	}
+
+	@Override
+	public JsonObject toJsonObject() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

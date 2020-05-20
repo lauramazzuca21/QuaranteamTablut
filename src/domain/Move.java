@@ -91,6 +91,24 @@ public class Move implements JsonSerializable {
 		obj.addProperty("to",to);
 		return obj.toString();
 	}
+	
+	@Override
+	public JsonObject toJsonObject() {
+		//Formato: 0 colonna, 1 riga
+		String from = getBox(this.getStartX(), this.getStartY());
+		String to = getBox(this.getFinalX(), this.getFinalY());	
+		JsonObject obj = new JsonObject();
+		obj.addProperty("from",from);
+		obj.addProperty("to",to);
+		return obj;
+	}
+	
+	public String getBox(int row, int column) {
+		String ret;
+		char col = (char) (column + 97);
+		ret = col + "" + (row + 1);
+		return ret;
+	}
 
 	@Override
 	public void fromJson(String jsonString) {

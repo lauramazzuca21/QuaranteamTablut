@@ -1,6 +1,5 @@
 package domain;
 
-import ai.ResearchAlgorithm;
 import enums.PlayerKind;
 
 public abstract class Player {
