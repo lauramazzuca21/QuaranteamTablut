@@ -2,6 +2,8 @@
 
 This is an AI that plays Tablut (with Ashton rules) made to participate in the annual challenge for our University course "Foundations of Artificial Intelligence".  
 
+It runs using Iterative Deepening Alpha-Beta search by default.
+
 > Our commits follow the [Gitmoji](https://gitmoji.carloscuesta.me/) guide.
 
 ## Executing the Player
